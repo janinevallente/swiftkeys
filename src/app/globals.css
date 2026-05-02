@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter+Tight:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap");
+
+:root {
+  --font-display: "Syne", sans-serif;
+  --font-body: "Inter Tight", sans-serif;
+
+  --color-bg: #f0ede6;
+  --color-hero: #20201e;
+  --color-ink: #111110;
+  --color-ink-secondary: #1c1c1a;
+  --color-ink-muted: #6b6a67;
+  --color-surface: #1a1a18;
+  --color-accent: #c8f04a;
+  --color-border: #d8d5ce;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-ink);
+  color: var(--color-bg);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: #c5c2bb;
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #999891;
+}
+
+.projects-list-area * {
+  cursor: none;
+}
+
+/* Marquee animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* Page transition overlay */
+.page-transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+}
