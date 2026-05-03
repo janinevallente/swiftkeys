@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { meta } from "@/lib/data";
-import { AppProvider } from "@/store";
 
 export const metadata: Metadata = {
-  title: meta.title,
-  description: meta.description,
-  authors: [{ name: meta.author }],
+  title: "SwiftKeys — Typing Speed Test",
+  description: "A minimal, beautiful typing speed test inspired by MonkeyType and Keybr.",
   icons: { icon: "/favicon.ico" },
 };
 
@@ -15,10 +12,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <head>
         <link rel="icon" href="/favicon.ico" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body>
-        <AppProvider>{children}</AppProvider>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

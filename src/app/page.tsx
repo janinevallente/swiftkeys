@@ -1,100 +1,76 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import Preloader from "@/components/ui/Preloader";
-import ScrollToSection from "@/components/animations/ScrollToSection";
-
-// Set to false to disable the preloader entirely
-const ENABLE_PRELOADER = true;
-const SESSION_KEY = "site_loaded";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { TypingTest } from "@/components/typing/TypingTest";
 
 export default function Home() {
-  const [loaded, setLoaded] = useState(false);
-  const [ready, setReady] = useState(false);
+  const [isDark, setIsDark] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (!ENABLE_PRELOADER) {
-      setLoaded(true);
-      setReady(true);
-      return;
-    }
-    const hasLoaded = sessionStorage.getItem(SESSION_KEY) === "1";
-    setLoaded(hasLoaded);
-    setReady(true);
+    setMounted(true);
+    const saved = localStorage.getItem("tt-theme");
+    if (saved === "light") setIsDark(false);
   }, []);
 
-  useEffect(() => {
-    if (loaded) {
-      const hash = window.location.hash;
-      if (hash) {
-        const el = document.getElementById(hash.slice(1));
-        if (el) el.scrollIntoView({ behavior: "smooth" });
-      }
-    }
-  }, [loaded]);
-
-  const handleDone = () => {
-    sessionStorage.setItem(SESSION_KEY, "1");
-    setLoaded(true);
+  const toggleTheme = () => {
+    setIsDark((d) => {
+      const next = !d;
+      localStorage.setItem("tt-theme", next ? "dark" : "light");
+      return next;
+    });
   };
 
-  if (!ready) {
-    return <div className="fixed inset-0 bg-ink z-[100]" />;
-  }
+  if (!mounted) return null;
+
+  const bg = isDark
+    ? "radial-gradient(ellipse at 50% 0%, #1f1e15 0%, #111110 60%)"
+    : "radial-gradient(ellipse at 50% 0%, #f0ede4 0%, #e8e4d9 70%)";
+
+  const logoColor = isDark ? "#4a4a42" : "#c4bfb5";
+  const subtitleColor = isDark ? "#353530" : "#d0cbc0";
 
   return (
-    <>
-      <Suspense fallback={null}>
-        <ScrollToSection />
-      </Suspense>
+    <main
+      className="min-h-screen flex flex-col items-center justify-center px-4 py-12 transition-colors duration-500"
+      style={{ background: bg }}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: -12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="mb-10 text-center select-none"
+      >
+        <div
+          className="text-sm font-mono tracking-widest uppercase mb-1"
+          style={{ color: logoColor, letterSpacing: "0.22em" }}
+        >
+          swiftkeys
+        </div>
+        <div className="text-xs" style={{ color: subtitleColor, letterSpacing: "0.1em" }}>
+          typing speed test
+        </div>
+      </motion.div>
 
-      <AnimatePresence mode="wait">
-        {!loaded && <Preloader key="preloader" onDone={handleDone} />}
-      </AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full"
+      >
+        <TypingTest isDark={isDark} onToggleTheme={toggleTheme} />
+      </motion.div>
 
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: loaded ? 1 : 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.4 }}
+        className="mt-12 text-xs"
+        style={{ color: subtitleColor, letterSpacing: "0.08em" }}
       >
-        <Navbar />
-
-        <main>
-          {/* ── Add your sections here ─────────────────────────── */}
-          <section
-            id="home"
-            className="min-h-screen flex items-center justify-center bg-bg"
-          >
-            <div className="text-center px-8">
-              <h1 className="font-display text-5xl md:text-7xl font-bold text-ink mb-4">
-                Your Project
-              </h1>
-              <p className="font-body text-ink-muted text-lg">
-                Replace this with your first section.
-              </p>
-            </div>
-          </section>
-
-          {/* Example section skeleton — duplicate and customise */}
-          <section id="about" className="min-h-screen flex items-center justify-center bg-ink">
-            <p className="font-body text-white/50">About section</p>
-          </section>
-
-          <section id="work" className="min-h-screen flex items-center justify-center bg-bg">
-            <p className="font-body text-ink-muted">Work section</p>
-          </section>
-
-          <section id="contact" className="min-h-screen flex items-center justify-center bg-ink">
-            <p className="font-body text-white/50">Contact section</p>
-          </section>
-          {/* ───────────────────────────────────────────────────── */}
-        </main>
-
-        <Footer />
+        made with care · inspired by monkeytype
       </motion.div>
-    </>
+    </main>
   );
 }
