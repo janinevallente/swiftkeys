@@ -35,6 +35,7 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
     liveWpm,
     accuracy,
     handleKeyPress,
+    getExpectedChar,
     restart,
   } = useTypingTest(duration, difficulty);
 
@@ -46,44 +47,45 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
     prevStatus.current = status;
   }, [status, playFinish]);
 
-  const onKey = useCallback(
-    (e: KeyboardEvent) => {
-      // Tab = restart
+  // Use a ref for handleKeyPress so the event listener never goes stale
+  const handleKeyPressRef = useRef(handleKeyPress);
+  handleKeyPressRef.current = handleKeyPress;
+
+  const getExpectedCharRef = useRef(getExpectedChar);
+  getExpectedCharRef.current = getExpectedChar;
+
+  const playTickRef = useRef(playTick);
+  playTickRef.current = playTick;
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      // Prevent default for typing keys to avoid page refresh/other actions
+      if (e.key.length === 1 || e.key === "Backspace") {
+        e.preventDefault();
+      }
+      
       if (e.key === "Tab") {
         e.preventDefault();
         restart();
         return;
       }
-
-      // Escape = blur / refocus
       if (e.key === "Escape") return;
-
       if (e.metaKey || e.ctrlKey || e.altKey) return;
 
       if (e.key === "Backspace" || e.key.length === 1) {
-        const isCorrect =
-          e.key !== "Backspace" &&
-          chars[cursor]?.char === e.key;
-        const isIncorrect =
-          e.key !== "Backspace" &&
-          chars[cursor]?.char !== e.key;
-
-        if (isCorrect) playTick(true);
-        if (isIncorrect) playTick(false);
-
-        handleKeyPress(e.key);
+        if (e.key !== "Backspace") {
+          const expected = getExpectedCharRef.current();
+          console.log("Typed:", e.key, "Expected:", expected);
+          playTickRef.current(e.key === expected);
+        }
+        handleKeyPressRef.current(e.key);
       }
-    },
-    [chars, cursor, handleKeyPress, playTick, restart]
-  );
+    };
 
-  // Global keydown listener
-  useEffect(() => {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [onKey]);
+  }, [restart]);
 
-  // Focus management for mobile
   const focusInput = () => {
     inputRef.current?.focus();
     setFocused(true);
@@ -92,18 +94,18 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
   const handleMobileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     if (val.length === 0) {
-      handleKeyPress("Backspace");
+      handleKeyPressRef.current("Backspace");
     } else {
       const last = val[val.length - 1];
       if (last !== lastKey.current) {
-        const isCorrect = chars[cursor]?.char === last;
-        playTick(isCorrect);
-        handleKeyPress(last);
+        const expected = getExpectedCharRef.current();
+        playTickRef.current(last === expected);
+        handleKeyPressRef.current(last);
         lastKey.current = last;
       }
     }
-    // Reset to prevent accumulation
     e.target.value = "a";
+    console.log(val)
   };
 
   const handleRestart = useCallback(() => {
@@ -121,26 +123,17 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
     restart();
   };
 
-  // Colors
-  const bg = isDark ? "#17171380" : "#f5f2ed80";
-  const border = isDark ? "#2e2e2640" : "#e0dbd260";
   const cardBg = isDark ? "#1a1a16" : "#f8f5ef";
   const cardBorder = isDark ? "#2a2a22" : "#e8e3d8";
-  const muted = isDark ? "#3a3a32" : "#cdc8be";
   const hintColor = isDark ? "#4a4a42" : "#b4afa6";
 
   return (
     <div className="w-full max-w-2xl mx-auto px-4">
-      {/* Card */}
       <motion.div
         className="relative rounded-2xl p-6 md:p-8"
-        style={{
-          background: cardBg,
-          border: `1px solid ${cardBorder}`,
-        }}
+        style={{ background: cardBg, border: `1px solid ${cardBorder}` }}
         onClick={focusInput}
       >
-        {/* Hidden input for mobile */}
         <input
           ref={inputRef}
           className="absolute opacity-0 w-0 h-0 pointer-events-none"
@@ -179,9 +172,7 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
                 status={status}
               />
 
-              {/* Typing area */}
               <div className="relative mb-6">
-                {/* Focus hint */}
                 {!focused && (
                   <div
                     className="absolute inset-0 flex items-center justify-center z-10 rounded-xl backdrop-blur-sm text-sm"
@@ -193,21 +184,17 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
                 <TypingArea chars={chars} cursor={cursor} isDark={isDark} />
               </div>
 
-              {/* Hint */}
               <div
                 className="text-center text-xs mt-4"
                 style={{ color: isDark ? "#3a3a32" : "#ccc8c0", letterSpacing: "0.1em" }}
               >
-                {status === "idle"
-                  ? "start typing · tab to restart"
-                  : "tab to restart"}
+                {status === "idle" ? "start typing · tab to restart" : "tab to restart"}
               </div>
             </motion.div>
           )}
         </AnimatePresence>
       </motion.div>
 
-      {/* Controls */}
       <div className="mt-5 px-1">
         <ControlBar
           duration={duration}

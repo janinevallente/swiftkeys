@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import type { CharData } from "@/hooks/useTypingTest";
 
 interface TypingAreaProps {
@@ -14,7 +14,6 @@ export function TypingArea({ chars, cursor, isDark }: TypingAreaProps) {
   const cursorRef = useRef<HTMLSpanElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  // Auto-scroll to keep cursor visible
   useEffect(() => {
     if (cursorRef.current && containerRef.current) {
       const cursorEl = cursorRef.current;
@@ -32,6 +31,9 @@ export function TypingArea({ chars, cursor, isDark }: TypingAreaProps) {
       }
     }
   }, [cursor]);
+
+  // Untyped color (both "idle" and "active" look the same — gray)
+  const untypedColor = isDark ? "#4a4a42" : "#c4bfb5";
 
   return (
     <div
@@ -51,46 +53,36 @@ export function TypingArea({ chars, cursor, isDark }: TypingAreaProps) {
           const isActive = i === cursor;
           return (
             <span key={i} className="relative inline-block">
-              {/* Blinking cursor before this char */}
               {isActive && (
                 <motion.span
                   ref={cursorRef}
                   className="absolute -left-0.5 top-0 bottom-0 w-0.5 rounded-full"
-                  style={{
-                    background: isDark ? "#e4c96b" : "#d97706",
-                  }}
-                  animate={{ opacity: [1, 0, 1] }}
-                  transition={{ 
-                    duration: 1, 
-                    repeat: Infinity, 
-                    ease: "easeInOut",
-                    repeatType: "mirror"
+                  style={{ background: isDark ? "#e4c96b" : "#d97706" }}
+                  animate={{ opacity: [1, 1, 0, 0] }}
+                  transition={{
+                    duration: 1,
+                    repeat: Infinity,
+                    ease: "linear",
+                    times: [0, 0.5, 0.5, 1],
                   }}
                 />
               )}
               <span
                 className="transition-colors duration-75"
                 style={{
-                  color:
-                    c.state === "correct"
-                      ? isDark
-                        ? "#a8b5a0"
-                        : "#4b7a4b"
-                      : c.state === "incorrect"
-                      ? isDark
-                        ? "#c87171"
-                        : "#b91c1c"
-                      : c.state === "active"
-                      ? isDark
-                        ? "#e8e4d9"
-                        : "#1a1a1a"
-                      : isDark
-                      ? "#4a4a42"
-                      : "#c4bfb5",
-                  textDecorationLine: c.state === "incorrect" ? "underline" : "none",
-                  textDecorationColor: isDark ? "#c87171" : "#b91c1c",
-                  textDecorationThickness: "auto", // optional
-                  textDecorationStyle: "solid",     // optional
+                  color: (() => {
+                    if (c.state === "correct") return isDark ? "#a8b5a0" : "#4b7a4b";
+                    if (c.state === "incorrect") return isDark ? "#c87171" : "#b91c1c";
+                    if (c.state === "active") return isDark ? "#e8e4d9" : "#1a1a1a";
+                    return untypedColor; // idle state
+                  })(),
+                  textDecoration: c.state === "incorrect" 
+                    ? `underline ${isDark ? "#c87171" : "#b91c1c"}`
+                    : "none",
+                  backgroundColor: c.state === "active" 
+                    ? (isDark ? "rgba(228, 201, 107, 0.15)" : "rgba(217, 119, 6, 0.1)")
+                    : "transparent",
+                  borderRadius: "2px",
                 }}
               >
                 {c.char === " " ? "\u00a0" : c.char}
