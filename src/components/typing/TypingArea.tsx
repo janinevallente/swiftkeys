@@ -22,7 +22,6 @@ export function TypingArea({ chars, cursor, isDark }: TypingAreaProps) {
       const cursorBottom = cursorTop + cursorEl.offsetHeight;
       const containerHeight = container.clientHeight;
       const scrollTop = container.scrollTop;
-
       if (cursorBottom > scrollTop + containerHeight - 40) {
         container.scrollTo({ top: cursorTop - 60, behavior: "smooth" });
       }
@@ -32,21 +31,35 @@ export function TypingArea({ chars, cursor, isDark }: TypingAreaProps) {
     }
   }, [cursor]);
 
-  // Untyped color (both "idle" and "active" look the same — gray)
-  const untypedColor = isDark ? "#4a4a42" : "#c4bfb5";
+  const untypedColor = isDark ? "var(--text-muted)" : "#b8cce0";
+  const correctColor = isDark ? "var(--green-dim)" : "#2e8b6a";
+  const incorrectColor = isDark ? "var(--red)" : "#cc2244";
+  const cursorColor = isDark ? "var(--cyan)" : "#0099bb";
 
   return (
     <div
       ref={containerRef}
       className="relative w-full overflow-hidden"
-      style={{ maxHeight: "160px" }}
+      style={{ maxHeight: "168px" }}
     >
+      {/* Fade out bottom */}
       <div
-        className="text-2xl md:text-3xl leading-relaxed tracking-wide font-mono select-none relative"
+        className="absolute bottom-0 left-0 right-0 h-10 pointer-events-none z-10"
         style={{
-          lineHeight: "2.6rem",
+          background: isDark
+            ? "linear-gradient(to top, var(--bg-card), transparent)"
+            : "linear-gradient(to top, #ffffff, transparent)",
+        }}
+      />
+
+      <div
+        className="font-mono select-none relative"
+        style={{
+          fontSize: "1.45rem",
+          lineHeight: "2.8rem",
           wordBreak: "break-word",
           whiteSpace: "pre-wrap",
+          letterSpacing: "0.02em",
         }}
       >
         {chars.map((c, i) => {
@@ -56,33 +69,30 @@ export function TypingArea({ chars, cursor, isDark }: TypingAreaProps) {
               {isActive && (
                 <motion.span
                   ref={cursorRef}
-                  className="absolute -left-0.5 top-0 bottom-0 w-0.5 rounded-full"
-                  style={{ background: isDark ? "#e4c96b" : "#d97706" }}
-                  animate={{ opacity: [1, 1, 0, 0] }}
-                  transition={{
-                    duration: 1,
-                    repeat: Infinity,
-                    ease: "linear",
-                    times: [0, 0.5, 0.5, 1],
+                  className="absolute rounded-sm"
+                  style={{
+                    left: "-1px",
+                    top: "4px",
+                    bottom: "4px",
+                    width: "2px",
+                    background: cursorColor,
+                    boxShadow: isDark ? `0 0 8px ${cursorColor}, 0 0 16px rgba(0,212,255,0.3)` : "none",
                   }}
+                  animate={{ opacity: [1, 1, 0, 0] }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear", times: [0, 0.5, 0.5, 1] }}
                 />
               )}
               <span
-                className="transition-colors duration-75"
                 style={{
-                  color: (() => {
-                    if (c.state === "correct") return isDark ? "#a8b5a0" : "#4b7a4b";
-                    if (c.state === "incorrect") return isDark ? "#c87171" : "#b91c1c";
-                    if (c.state === "active") return isDark ? "#e8e4d9" : "#1a1a1a";
-                    return untypedColor; // idle state
-                  })(),
-                  textDecoration: c.state === "incorrect" 
-                    ? `underline ${isDark ? "#c87171" : "#b91c1c"}`
-                    : "none",
-                  backgroundColor: c.state === "active" 
-                    ? (isDark ? "rgba(228, 201, 107, 0.15)" : "rgba(217, 119, 6, 0.1)")
-                    : "transparent",
-                  borderRadius: "2px",
+                  color:
+                    c.state === "correct" ? correctColor
+                    : c.state === "incorrect" ? incorrectColor
+                    : untypedColor,
+                  textDecoration:
+                    c.state === "incorrect"
+                      ? `underline ${incorrectColor}`
+                      : "none",
+                  transition: "color 0.06s",
                 }}
               >
                 {c.char === " " ? "\u00a0" : c.char}

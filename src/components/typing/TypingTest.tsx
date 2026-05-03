@@ -22,7 +22,7 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
   const [focused, setFocused] = useState(true);
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const lastKey = useRef<string>("");
+  const isPhysicalKeyboard = useRef(false);
 
   const { playTick, playFinish } = useSoundEffects(soundEnabled);
 
@@ -59,31 +59,20 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      // Prevent default for typing keys to avoid page refresh/other actions
-      if (e.key.length === 1 || e.key === "Backspace") {
-        e.preventDefault();
-      }
-      
-      if (e.key === "Tab") {
-        e.preventDefault();
-        restart();
-        return;
-      }
+      if (e.key === "Tab") { e.preventDefault(); restart(); return; }
       if (e.key === "Escape") return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
-
       if (e.key === "Backspace" || e.key.length === 1) {
+        isPhysicalKeyboard.current = true;
         if (e.key !== "Backspace") {
-          const expected = getExpectedCharRef.current();
-          console.log("Typed:", e.key, "Expected:", expected);
-          playTickRef.current(e.key === expected);
+          playTickRef.current(e.key === getExpectedCharRef.current());
         }
         handleKeyPressRef.current(e.key);
       }
     };
-
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [restart]);
 
   const focusInput = () => {
@@ -92,20 +81,20 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
   };
 
   const handleMobileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isPhysicalKeyboard.current) {
+      isPhysicalKeyboard.current = false;
+      e.target.value = "a";
+      return;
+    }
     const val = e.target.value;
     if (val.length === 0) {
       handleKeyPressRef.current("Backspace");
     } else {
       const last = val[val.length - 1];
-      if (last !== lastKey.current) {
-        const expected = getExpectedCharRef.current();
-        playTickRef.current(last === expected);
-        handleKeyPressRef.current(last);
-        lastKey.current = last;
-      }
+      playTickRef.current(last === getExpectedCharRef.current());
+      handleKeyPressRef.current(last);
     }
     e.target.value = "a";
-    console.log(val)
   };
 
   const handleRestart = useCallback(() => {
@@ -123,12 +112,12 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
     restart();
   };
 
-  const cardBg = isDark ? "#1a1a16" : "#f8f5ef";
-  const cardBorder = isDark ? "#2a2a22" : "#e8e3d8";
-  const hintColor = isDark ? "#4a4a42" : "#b4afa6";
+  const cardBg = isDark ? "var(--bg-card)" : "#ffffff";
+  const cardBorder = isDark ? "var(--border-subtle)" : "#dde8f4";
+  const hintColor = isDark ? "var(--text-muted)" : "#94aac0";
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-4">
+    <div className="w-full max-w-4xl mx-auto px-4">
       <div className="mb-5 px-1">
         <ControlBar
           duration={duration}
@@ -144,10 +133,24 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
         />
       </div>
       <motion.div
-        className="relative rounded-xl p-6 md:p-8"
-        style={{ background: cardBg, border: `1px solid ${cardBorder}` }}
+        className="relative rounded-xl p-6 md:p-10"
+        style={{
+          background: cardBg,
+          border: `1px solid ${cardBorder}`,
+          boxShadow: isDark
+            ? "0 0 0 1px rgba(0,212,255,0.04), 0 24px 48px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.03)"
+            : "0 8px 32px rgba(0,60,120,0.08), 0 1px 0 rgba(0,0,0,0.04)",
+        }}
         onClick={focusInput}
       >
+        {/* Subtle top highlight line */}
+        {isDark && (
+          <div
+            className="absolute top-0 left-8 right-8 h-px rounded-full"
+            style={{ background: "linear-gradient(90deg, transparent, rgba(0,212,255,0.2), transparent)" }}
+          />
+        )}
+
         <input
           ref={inputRef}
           className="absolute opacity-0 w-0 h-0 pointer-events-none"
@@ -197,12 +200,15 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
                 )}
                 <TypingArea chars={chars} cursor={cursor} isDark={isDark} />
               </div>
-
               <div
                 className="text-center text-xs mt-4"
-                style={{ color: isDark ? "#3a3a32" : "#ccc8c0", letterSpacing: "0.1em" }}
+                style={{
+                  color: isDark ? "var(--text-dim)" : "#c0d0e0",
+                  fontFamily: "var(--font-mono)",
+                  letterSpacing: "0.1em",
+                }}
               >
-                {status === "idle" ? "start typing · tab to restart" : "tab to restart"}
+                {status === "idle" ? "start typing  ·  tab to restart" : "tab to restart"}
               </div>
             </motion.div>
           )}

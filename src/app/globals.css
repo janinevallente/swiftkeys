@@ -1,12 +1,35 @@
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Geist:wght@300;400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --font-mono: "JetBrains Mono", monospace;
-  --font-sans: "Geist", sans-serif;
+  --font-mono: "Space Mono", monospace;
+  --font-sans: "Space Grotesk", sans-serif;
+
+  /* SwiftKeys dark palette */
+  --bg-base: #080c14;
+  --bg-surface: #0d1320;
+  --bg-card: #111827;
+  --bg-elevated: #162033;
+  --border-subtle: #1e2d42;
+  --border-strong: #2a3f5a;
+
+  /* Accents */
+  --cyan: #00d4ff;
+  --cyan-dim: #0099bb;
+  --cyan-glow: rgba(0, 212, 255, 0.15);
+  --cyan-glow-strong: rgba(0, 212, 255, 0.3);
+  --red: #ff4d6a;
+  --green: #00e5a0;
+  --green-dim: rgba(0, 229, 160, 0.7);
+
+  /* Text */
+  --text-primary: #e8f4ff;
+  --text-secondary: #7a9ab8;
+  --text-muted: #3a5470;
+  --text-dim: #1e3048;
 }
 
 * {
@@ -24,21 +47,39 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  background: var(--bg-base);
+  color: var(--text-primary);
 }
 
-/* Scrollbar */
+.font-mono {
+  font-family: var(--font-mono) !important;
+}
+
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 3px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #333;
+  background: var(--border-strong);
   border-radius: 99px;
 }
 
-/* Mono font for typing area */
-.font-mono {
-  font-family: var(--font-mono) !important;
+/* Noise texture overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+/* Glow utility */
+.glow-cyan {
+  box-shadow:
+    0 0 20px var(--cyan-glow),
+    0 0 40px rgba(0, 212, 255, 0.08);
 }

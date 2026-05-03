@@ -11,57 +11,91 @@ interface StatsBarProps {
 }
 
 export function StatsBar({ wpm, accuracy, timeLeft, isDark, status }: StatsBarProps) {
-  const muted = isDark ? "#4a4a42" : "#c4bfb5";
-  const primary = isDark ? "#e8e4d9" : "#1a1a1a";
-  const accent = isDark ? "#e4c96b" : "#d97706";
-
-  const timerPct = Math.min(timeLeft / 60, 1);
   const isLow = timeLeft <= 10 && status === "running";
+  const accent = isDark ? "var(--cyan)" : "#0099bb";
+  const muted = isDark ? "var(--text-muted)" : "#94aac0";
+  const primary = isDark ? "var(--text-primary)" : "#0d1a2e";
 
   return (
-    <div className="flex items-center justify-between gap-6 mb-6 select-none">
+    <div className="flex items-center justify-between gap-6 mb-8 select-none">
       {/* Timer */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-end gap-1.5">
         <motion.span
           key={timeLeft}
-          initial={{ scale: 1.15, opacity: 0.6 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="text-4xl font-mono font-bold tabular-nums"
-          style={{ color: isLow ? "#e05555" : accent }}
+          initial={{ y: -4, opacity: 0.5 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.15 }}
+          className="font-mono font-bold tabular-nums leading-none"
+          style={{
+            fontSize: "2.75rem",
+            color: isLow ? "var(--red)" : accent,
+            textShadow: isLow
+              ? "0 0 20px rgba(255,77,106,0.4)"
+              : isDark ? "0 0 20px rgba(0,212,255,0.3)" : "none",
+          }}
         >
           {timeLeft}
         </motion.span>
-        <span className="text-sm" style={{ color: muted }}>
+        <span
+          className="font-mono mb-1.5 text-sm"
+          style={{ color: muted }}
+        >
           s
         </span>
       </div>
 
-      {/* Live stats */}
-      <div className="flex items-center gap-6">
-        <Stat label="wpm" value={status === "idle" ? "—" : String(wpm)} color={primary} muted={muted} />
-        <Stat label="acc" value={status === "idle" ? "—" : `${accuracy}%`} color={primary} muted={muted} />
+      {/* Stats */}
+      <div className="flex items-center gap-5">
+        <StatChip
+          label="wpm"
+          value={status === "idle" ? "—" : String(wpm)}
+          isDark={isDark}
+          accent={accent}
+          muted={muted}
+          primary={primary}
+          highlight={status === "running"}
+        />
+        <div style={{ width: "1px", height: "32px", background: isDark ? "var(--border-subtle)" : "#dde8f4" }} />
+        <StatChip
+          label="acc"
+          value={status === "idle" ? "—" : `${accuracy}%`}
+          isDark={isDark}
+          accent={accent}
+          muted={muted}
+          primary={primary}
+          highlight={false}
+        />
       </div>
     </div>
   );
 }
 
-function Stat({
-  label,
-  value,
-  color,
-  muted,
+function StatChip({
+  label, value, isDark, accent, muted, primary, highlight,
 }: {
-  label: string;
-  value: string;
-  color: string;
-  muted: string;
+  label: string; value: string; isDark: boolean; accent: string;
+  muted: string; primary: string; highlight: boolean;
 }) {
   return (
-    <div className="text-center">
-      <div className="text-2xl font-mono font-semibold tabular-nums" style={{ color }}>
+    <div className="text-right">
+      <div
+        className="font-mono font-bold tabular-nums leading-none"
+        style={{
+          fontSize: "1.5rem",
+          color: highlight ? accent : primary,
+          transition: "color 0.2s",
+        }}
+      >
         {value}
       </div>
-      <div className="text-xs uppercase tracking-widest mt-0.5" style={{ color: muted, letterSpacing: "0.14em" }}>
+      <div
+        className="text-xs uppercase mt-1"
+        style={{
+          color: muted,
+          fontFamily: "var(--font-mono)",
+          letterSpacing: "0.14em",
+        }}
+      >
         {label}
       </div>
     </div>

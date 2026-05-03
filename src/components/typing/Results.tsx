@@ -10,14 +10,13 @@ interface ResultsProps {
 }
 
 export function Results({ result, isDark, onRestart }: ResultsProps) {
-  const bg = isDark ? "#1e1e1a" : "#f5f2ed";
-  const border = isDark ? "#2e2e26" : "#e0dbd2";
-  const primary = isDark ? "#e8e4d9" : "#1a1a1a";
-  const muted = isDark ? "#5a5a50" : "#9a9488";
-  const accent = isDark ? "#e4c96b" : "#d97706";
+  const primary = isDark ? "var(--text-primary)" : "#0d1a2e";
+  const muted = isDark ? "var(--text-secondary)" : "#6a8aaa";
+  const border = isDark ? "var(--border-subtle)" : "#dde8f4";
+  const cardBg = isDark ? "var(--bg-surface)" : "#f5f9ff";
+  const accent = isDark ? "var(--cyan)" : "#0099bb";
 
-  const stats = [
-    { label: "WPM", value: result.wpm, suffix: "" },
+  const secondaryStats = [
     { label: "accuracy", value: result.accuracy, suffix: "%" },
     { label: "correct", value: result.correct, suffix: "" },
     { label: "errors", value: result.incorrect, suffix: "" },
@@ -26,68 +25,91 @@ export function Results({ result, isDark, onRestart }: ResultsProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       className="w-full"
     >
-      {/* Main WPM */}
-      <div className="text-center mb-10">
-        <motion.div
-          initial={{ scale: 0.85, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="text-8xl md:text-9xl font-mono font-bold leading-none"
-          style={{ color: accent }}
-        >
-          {result.wpm}
-        </motion.div>
-        <div className="text-sm uppercase tracking-widest mt-2" style={{ color: muted, letterSpacing: "0.16em" }}>
-          words per minute
+      {/* WPM Hero */}
+      <div className="text-center mb-8">
+        <div className="text-xs uppercase tracking-widest mb-3" style={{ color: muted, fontFamily: "var(--font-mono)", letterSpacing: "0.2em" }}>
+          result
+        </div>
+        <div className="flex items-end justify-center gap-3">
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="font-mono font-bold leading-none tabular-nums"
+            style={{
+              fontSize: "clamp(5rem, 18vw, 7rem)",
+              color: accent,
+              textShadow: isDark ? "0 0 40px rgba(0,212,255,0.25)" : "none",
+            }}
+          >
+            {result.wpm}
+          </motion.div>
+          <div className="mb-3 text-left">
+            <div className="font-mono text-sm font-bold" style={{ color: muted }}>WPM</div>
+            <div className="font-mono text-xs" style={{ color: isDark ? "var(--text-muted)" : "#b0c4d8" }}>words/min</div>
+          </div>
         </div>
       </div>
 
-      {/* Stat grid */}
+      {/* Secondary stats */}
       <div
-        className="grid grid-cols-4 gap-px rounded-xl overflow-hidden mb-8"
-        style={{ background: border }}
+        className="grid grid-cols-4 rounded-xl overflow-hidden mb-6"
+        style={{ border: `1px solid ${border}` }}
       >
-        {stats.slice(1).map((s, i) => (
+        {secondaryStats.map((s, i) => (
           <motion.div
             key={s.label}
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 + i * 0.07, duration: 0.35 }}
-            className="text-center py-5 px-3"
-            style={{ background: bg }}
+            transition={{ delay: 0.15 + i * 0.06, duration: 0.3 }}
+            className="text-center py-5 px-2"
+            style={{
+              background: cardBg,
+              borderRight: i < 3 ? `1px solid ${border}` : "none",
+            }}
           >
-            <div className="text-2xl font-mono font-semibold tabular-nums" style={{ color: primary }}>
+            <div
+              className="font-mono font-bold tabular-nums mb-1"
+              style={{ fontSize: "1.35rem", color: primary }}
+            >
               {s.value}{s.suffix}
             </div>
-            <div className="text-xs uppercase tracking-widest mt-1" style={{ color: muted, letterSpacing: "0.14em" }}>
+            <div
+              className="text-xs uppercase"
+              style={{ color: muted, fontFamily: "var(--font-mono)", letterSpacing: "0.12em" }}
+            >
               {s.label}
             </div>
           </motion.div>
         ))}
       </div>
 
-      {/* Restart */}
+      {/* Restart button */}
       <div className="flex justify-center">
         <motion.button
-          whileHover={{ scale: 1.03 }}
+          whileHover={{ scale: 1.02, boxShadow: isDark ? "0 0 24px rgba(0,212,255,0.25)" : "0 4px 16px rgba(0,153,187,0.2)" }}
           whileTap={{ scale: 0.97 }}
           onClick={onRestart}
-          className="flex items-center gap-2 px-7 py-3 rounded-xl text-sm font-medium transition-all duration-200"
+          className="flex items-center gap-2.5 px-8 py-3 rounded-xl text-sm font-semibold transition-all duration-200"
           style={{
-            background: accent,
-            color: isDark ? "#1a1a14" : "#fff",
+            background: isDark
+              ? "linear-gradient(135deg, rgba(0,212,255,0.15), rgba(0,212,255,0.08))"
+              : "linear-gradient(135deg, #0099bb, #007a99)",
+            border: `1px solid ${isDark ? "rgba(0,212,255,0.3)" : "transparent"}`,
+            color: isDark ? "var(--cyan)" : "#ffffff",
+            fontFamily: "var(--font-mono)",
+            letterSpacing: "0.04em",
           }}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <path d="M1 4v6h6M23 20v-6h-6" />
-            <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15" />
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <path d="M1 4v6h6M3.51 15a9 9 0 1 0 .49-3.03" />
           </svg>
-          try again
+          restart
         </motion.button>
       </div>
     </motion.div>
