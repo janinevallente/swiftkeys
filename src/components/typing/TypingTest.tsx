@@ -128,9 +128,23 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
   const hintColor = isDark ? "#4a4a42" : "#b4afa6";
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-4">
+    <div className="w-full max-w-5xl mx-auto px-4">
+      <div className="mb-5 px-1">
+        <ControlBar
+          duration={duration}
+          difficulty={difficulty}
+          soundEnabled={soundEnabled}
+          isDark={isDark}
+          onDuration={handleDuration}
+          onDifficulty={handleDifficulty}
+          onToggleSound={() => setSoundEnabled((s) => !s)}
+          onToggleTheme={onToggleTheme}
+          onRestart={handleRestart}
+          status={status}
+        />
+      </div>
       <motion.div
-        className="relative rounded-2xl p-6 md:p-8"
+        className="relative rounded-xl p-6 md:p-8"
         style={{ background: cardBg, border: `1px solid ${cardBorder}` }}
         onClick={focusInput}
       >
@@ -194,21 +208,6 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
           )}
         </AnimatePresence>
       </motion.div>
-
-      <div className="mt-5 px-1">
-        <ControlBar
-          duration={duration}
-          difficulty={difficulty}
-          soundEnabled={soundEnabled}
-          isDark={isDark}
-          onDuration={handleDuration}
-          onDifficulty={handleDifficulty}
-          onToggleSound={() => setSoundEnabled((s) => !s)}
-          onToggleTheme={onToggleTheme}
-          onRestart={handleRestart}
-          status={status}
-        />
-      </div>
     </div>
   );
 }
