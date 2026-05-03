@@ -49,7 +49,7 @@ export default function Home() {
           swiftkeys
         </div>
         <div className="text-xs" style={{ color: subtitleColor, letterSpacing: "0.1em" }}>
-          typing speed test
+          typing speed test · developed by J9
         </div>
       </motion.div>
 
@@ -69,7 +69,7 @@ export default function Home() {
         className="mt-12 text-xs"
         style={{ color: subtitleColor, letterSpacing: "0.08em" }}
       >
-        made with care · inspired by monkeytype
+        © 2026 SwiftKeys. All rights reserved
       </motion.div>
     </main>
   );
