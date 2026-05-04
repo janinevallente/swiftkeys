@@ -38,34 +38,44 @@ export function useTypingTest(duration: number, difficulty: Difficulty) {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const startTimeRef = useRef<number>(0);
 
-  // Initialize or reset the test
+  // Initialize or reset the test with current text
   const initializeTest = useCallback((newText: string) => {
-    const initial: CharData[] = newText.split("").map((char) => ({
+    const initial: CharData[] = newText.split("").map((char, index) => ({
       char,
-      state: "idle" as CharState,
+      state: index === 0 ? "active" : "idle",
     }));
 
-    if (initial.length > 0) {
-      initial[0].state = "active";
-    }
-
     charsRef.current = initial;
-    setChars([...initial]); // Create a new array to ensure re-render
+    setChars([...initial]);
     cursorRef.current = 0;
     setCursor(0);
     correctRef.current = 0;
     setCorrectCount(0);
     incorrectRef.current = 0;
     setIncorrectCount(0);
+    statusRef.current = "idle";
+    setStatus("idle");
+    setResult(null);
+
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
   }, []);
 
-  // Initialize when text changes
+  // Generate new text when difficulty changes
   useEffect(() => {
-    initializeTest(text);
-  }, [text, initializeTest]);
+    const newText = getRandomText(difficulty);
+    setText(newText);
+    initializeTest(newText);
+    setTimeLeft(duration);
+  }, [difficulty, duration, initializeTest]);
 
+  // Also handle duration changes without changing text
   useEffect(() => {
-    if (statusRef.current === "idle") setTimeLeft(duration);
+    if (statusRef.current === "idle") {
+      setTimeLeft(duration);
+    }
   }, [duration]);
 
   const finishTest = useCallback(
@@ -87,13 +97,9 @@ export function useTypingTest(duration: number, difficulty: Difficulty) {
 
   const handleKeyPress = useCallback(
     (key: string) => {
-      console.log("Key pressed:", key); // Debug log
-
       if (statusRef.current === "finished") return;
 
-      // Start the test on first character input (not backspace)
       if (statusRef.current === "idle" && key !== "Backspace") {
-        console.log("Starting test...");
         startTimeRef.current = Date.now();
         statusRef.current = "running";
         setStatus("running");
@@ -112,27 +118,14 @@ export function useTypingTest(duration: number, difficulty: Difficulty) {
       const pos = cursorRef.current;
       const current = charsRef.current;
 
-      console.log("Current cursor position:", pos);
-      console.log("Current char at position:", current[pos]?.char);
-      console.log("Expected char:", current[pos]?.char);
-
       if (key === "Backspace") {
         if (pos === 0) return;
 
         const prevPos = pos - 1;
         const prevCharState = current[prevPos].state;
 
-        // Create new array
         const next = [...current];
-
-        // If the previous character was correct or incorrect, we need to reset it
-        if (prevCharState === "correct" || prevCharState === "incorrect") {
-          next[prevPos] = { ...next[prevPos], state: "active" };
-        } else {
-          next[prevPos] = { ...next[prevPos], state: "active" };
-        }
-
-        // Reset current position to idle
+        next[prevPos] = { ...next[prevPos], state: "active" };
         if (pos < next.length) {
           next[pos] = { ...next[pos], state: "idle" };
         }
@@ -153,21 +146,13 @@ export function useTypingTest(duration: number, difficulty: Difficulty) {
         return;
       }
 
-      // Handle regular typing
       if (pos >= current.length) return;
 
       const expectedChar = current[pos].char;
       const isCorrect = key === expectedChar;
 
-      console.log(
-        `Comparing: "${key}" vs "${expectedChar}" -> ${isCorrect ? "CORRECT" : "INCORRECT"}`,
-      );
-
       const next = [...current];
-      next[pos] = {
-        ...next[pos],
-        state: isCorrect ? "correct" : "incorrect",
-      };
+      next[pos] = { ...next[pos], state: isCorrect ? "correct" : "incorrect" };
 
       const nextPos = pos + 1;
       if (nextPos < next.length) {
@@ -196,29 +181,19 @@ export function useTypingTest(duration: number, difficulty: Difficulty) {
   );
 
   const getExpectedChar = useCallback((): string => {
-    const expected = charsRef.current[cursorRef.current]?.char ?? "";
-    console.log("getExpectedChar returning:", expected);
-    return expected;
+    return charsRef.current[cursorRef.current]?.char ?? "";
   }, []);
 
-  const restart = useCallback(
-    (newDifficulty?: Difficulty) => {
-      console.log("Restarting test...");
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-      const diff = newDifficulty ?? difficulty;
-      const newText = getRandomText(diff);
-      setText(newText);
-      setTimeLeft(duration);
-      statusRef.current = "idle";
-      setStatus("idle");
-      setResult(null);
-      initializeTest(newText);
-    },
-    [difficulty, duration, initializeTest],
-  );
+  const restart = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    const newText = getRandomText(difficulty);
+    setText(newText);
+    initializeTest(newText);
+    setTimeLeft(duration);
+  }, [difficulty, duration, initializeTest]);
 
   const liveWpm =
     statusRef.current === "running"
