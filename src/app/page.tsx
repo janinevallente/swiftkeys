@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Sun, Moon } from "lucide-react";
-import { TypingTest } from "@/components/typing/TypingTest";
+import { TypingTest } from "@/components/ui/TypingTest";
 
 export default function Home() {
   const [isDark, setIsDark] = useState(true);
