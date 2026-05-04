@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Volume2, VolumeX, RotateCcw } from "lucide-react";
 import type { Difficulty } from "@/lib/texts";
 
 interface ControlBarProps {
@@ -11,7 +12,6 @@ interface ControlBarProps {
   onDuration: (d: number) => void;
   onDifficulty: (d: Difficulty) => void;
   onToggleSound: () => void;
-  onToggleTheme: () => void;
   onRestart: () => void;
   status: "idle" | "running" | "finished";
 }
@@ -27,7 +27,6 @@ export function ControlBar({
   onDuration,
   onDifficulty,
   onToggleSound,
-  onToggleTheme,
   onRestart,
   status,
 }: ControlBarProps) {
@@ -52,20 +51,6 @@ export function ControlBar({
     border: "none",
     transition: "color 0.15s, background 0.15s",
   });
-
-  const divider = (
-    <span
-      style={{
-        display: "inline-block",
-        width: "1px",
-        height: "14px",
-        background: isDark ? "var(--border-subtle)" : "#d8c8b0",
-        margin: "0 6px",
-        verticalAlign: "middle",
-        opacity: 0.6,
-      }}
-    />
-  );
 
   return (
     <div className="flex items-center justify-between w-full flex-wrap gap-y-3">
@@ -122,30 +107,22 @@ export function ControlBar({
       <div className="flex items-center gap-1">
         <IconBtn
           onClick={onToggleSound}
-          title={soundEnabled ? "mute" : "unmute"}
+          title={soundEnabled ? "Mute" : "Unmute"}
           isDark={isDark}
         >
           {soundEnabled ? (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
-            </svg>
+            <Volume2 size={16} strokeWidth={1.8} />
           ) : (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-              <line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" />
-            </svg>
+            <VolumeX size={16} strokeWidth={1.8} />
           )}
         </IconBtn>
 
         <IconBtn
           onClick={onRestart}
-          title="restart (tab)"
+          title="Restart (Tab)"
           isDark={isDark}
         >
-          <svg width="13.4" height="13.4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <path d="M1 4v6h6M3.51 15a9 9 0 1 0 .49-3.03" />
-          </svg>
+          <RotateCcw size={16} strokeWidth={1.8} />
         </IconBtn>
       </div>
     </div>

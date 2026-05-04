@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { Sun, Moon } from "lucide-react";
 import { TypingTest } from "@/components/typing/TypingTest";
 
 export default function Home() {
@@ -48,13 +49,13 @@ export default function Home() {
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-20 flex items-center justify-between px-10 py-5 shrink-0"
+        className="relative z-20 flex items-center justify-between px-10 py-3 shrink-0"
       >
         {/* Logo */}
         <div className="flex items-center gap-2.5 select-none">
-          <LogoMark isDark={isDark} />
+          <KeyboardLogo isDark={isDark} />
           <span
-            className="text-lg font-bold"
+            className="text-lg font-bold pt-2"
             style={{
               fontFamily: "var(--font-sans)",
               color: isDark ? "var(--text-primary)" : "#2a1f0e",
@@ -70,22 +71,14 @@ export default function Home() {
           whileHover={{ color: isDark ? "var(--cyan)" : "#c47c2b" }}
           whileTap={{ scale: 0.88 }}
           onClick={toggleTheme}
-          title={isDark ? "light mode" : "dark mode"}
-          className="p-2 rounded-lg transition-colors duration-150"
+          title={isDark ? "Light mode" : "Dark mode"}
+          className="p-2 mt-2 rounded-lg transition-colors duration-150"
           style={{ color: isDark ? "var(--text-muted)" : "#a89070" }}
         >
           {isDark ? (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <circle cx="12" cy="12" r="5" />
-              <line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" />
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-              <line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" />
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-            </svg>
+            <Sun size={18} strokeWidth={1.8} />
           ) : (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-            </svg>
+            <Moon size={18} strokeWidth={1.8} />
           )}
         </motion.button>
       </motion.nav>
@@ -118,15 +111,48 @@ export default function Home() {
   );
 }
 
-function LogoMark({ isDark }: { isDark: boolean }) {
-  const stroke = isDark ? "var(--cyan)" : "#c47c2b";
-  const fill = isDark ? "rgba(0,212,255,0.08)" : "rgba(196,124,43,0.08)";
-  const dim = isDark ? "rgba(0,212,255,0.35)" : "rgba(196,124,43,0.35)";
+function KeyboardLogo({ isDark }: { isDark: boolean }) {
+  const primaryColor = isDark ? "var(--cyan)" : "#c47c2b";
+  const fadedColor = isDark ? "rgba(0,212,255,0.35)" : "rgba(196,124,43,0.35)";
+  const moreFaded = isDark ? "rgba(0,212,255,0.15)" : "rgba(196,124,43,0.15)";
+  
   return (
-    <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-      <rect x="1" y="1" width="26" height="26" rx="6" stroke={stroke} strokeWidth="1.5" fill={fill} />
-      <path d="M7 14 L12 9 L17 14 L22 9" stroke={stroke} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M7 19 L12 14 L17 19 L22 14" stroke={dim} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Keyboard base */}
+      <rect x="3" y="15" width="26" height="14" rx="3" stroke={primaryColor} strokeWidth="1.5" fill="none" opacity="0.8" />
+      
+      {/* Key rows */}
+      {/* Row 1: QWERTY */}
+      <g opacity="0.9">
+        <rect x="6" y="18" width="3" height="3" rx="0.5" stroke={primaryColor} strokeWidth="1" fill={moreFaded} />
+        <rect x="10" y="18" width="3" height="3" rx="0.5" stroke={primaryColor} strokeWidth="1" fill={moreFaded} />
+        <rect x="14" y="18" width="3" height="3" rx="0.5" stroke={primaryColor} strokeWidth="1" fill={moreFaded} />
+        <rect x="18" y="18" width="3" height="3" rx="0.5" stroke={primaryColor} strokeWidth="1" fill={moreFaded} />
+        <rect x="22" y="18" width="3" height="3" rx="0.5" stroke={primaryColor} strokeWidth="1" fill={moreFaded} />
+      </g>
+      
+      {/* Row 2: ASDF */}
+      <g opacity="0.7">
+        <rect x="7" y="22" width="3" height="3" rx="0.5" stroke={primaryColor} strokeWidth="1" fill={fadedColor} />
+        <rect x="11" y="22" width="3" height="3" rx="0.5" stroke={primaryColor} strokeWidth="1" fill={fadedColor} />
+        <rect x="15" y="22" width="3" height="3" rx="0.5" stroke={primaryColor} strokeWidth="1" fill={fadedColor} />
+        <rect x="19" y="22" width="3" height="3" rx="0.5" stroke={primaryColor} strokeWidth="1" fill={fadedColor} />
+        <rect x="23" y="22" width="3" height="3" rx="0.5" stroke={primaryColor} strokeWidth="1" fill={fadedColor} />
+      </g>
+      
+      {/* Spacebar row */}
+      <rect x="10" y="26" width="12" height="2.5" rx="1" stroke={primaryColor} strokeWidth="1" fill={moreFaded} opacity="0.5" />
+      
+      {/* Swift indicator - accent line */}
+      <path 
+        d="M16 6 L19 10 L13 10 L16 14" 
+        stroke={primaryColor} 
+        strokeWidth="1.8" 
+        strokeLinecap="round" 
+        strokeLinejoin="round" 
+        fill="none"
+        opacity="0.9"
+      />
     </svg>
   );
 }

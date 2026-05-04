@@ -120,7 +120,6 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
           onDuration={handleDuration}
           onDifficulty={handleDifficulty}
           onToggleSound={() => setSoundEnabled((s) => !s)}
-          onToggleTheme={onToggleTheme}
           onRestart={handleRestart}
           status={status}
         />
