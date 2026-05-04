@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "SwiftKeys — Typing Speed Test",
-  description: "A minimal, beautiful typing speed test inspired by MonkeyType and Keybr.",
+  description: "A minimal typing speed test.",
   icons: { icon: "/favicon.ico" },
 };
 

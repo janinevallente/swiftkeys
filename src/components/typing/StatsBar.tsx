@@ -12,9 +12,9 @@ interface StatsBarProps {
 
 export function StatsBar({ wpm, accuracy, timeLeft, isDark, status }: StatsBarProps) {
   const isLow = timeLeft <= 10 && status === "running";
-  const accent = isDark ? "var(--cyan)" : "#0099bb";
-  const muted = isDark ? "var(--text-muted)" : "#94aac0";
-  const primary = isDark ? "var(--text-primary)" : "#0d1a2e";
+  const accent = isDark ? "var(--cyan)" : "#c47c2b";
+  const muted = isDark ? "var(--text-muted)" : "#b8a080";
+  const primary = isDark ? "var(--text-secondary)" : "#7a6858";
 
   return (
     <div className="flex items-center justify-between gap-6 mb-8 select-none">

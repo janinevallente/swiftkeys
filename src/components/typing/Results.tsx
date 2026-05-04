@@ -10,27 +10,48 @@ interface ResultsProps {
 }
 
 export function Results({ result, isDark, onRestart }: ResultsProps) {
-  const primary = isDark ? "var(--text-primary)" : "#0d1a2e";
-  const muted = isDark ? "var(--text-secondary)" : "#6a8aaa";
-  const border = isDark ? "var(--border-subtle)" : "#dde8f4";
-  const cardBg = isDark ? "var(--bg-surface)" : "#f5f9ff";
-  const accent = isDark ? "var(--cyan)" : "#0099bb";
+  const accent = isDark ? "var(--cyan)" : "#c47c2b";
+  const muted = isDark ? "var(--text-muted)" : "#b8a080";
+  const secondary = isDark ? "var(--text-secondary)" : "#7a6858";
+  const primary = isDark ? "var(--text-primary)" : "#2a1f0e";
+  const divider = isDark ? "var(--border-subtle)" : "#d8c8b0";
 
   const secondaryStats = [
-    { label: "accuracy", value: result.accuracy, suffix: "%" },
-    { label: "correct", value: result.correct, suffix: "" },
-    { label: "errors", value: result.incorrect, suffix: "" },
-    { label: "time", value: Math.round(result.duration), suffix: "s" },
+    { label: "accuracy", value: `${result.accuracy}%` },
+    { label: "correct", value: String(result.correct) },
+    { label: "errors", value: String(result.incorrect) },
+    { label: "time", value: `${Math.round(result.duration)}s` },
   ];
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       className="w-full"
     >
-      {/* WPM Hero */}
+      {/* WPM hero */}
+      {/* <div className="mb-10">
+        <div
+          className="text-xs uppercase mb-2 tracking-widest"
+          style={{ color: muted, fontFamily: "var(--font-mono)", letterSpacing: "0.2em" }}
+        >
+          wpm
+        </div>
+        <motion.div
+          initial={{ scale: 0.88, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.08, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+          className="font-mono font-bold leading-none tabular-nums"
+          style={{
+            fontSize: "clamp(4.5rem, 14vw, 7rem)",
+            color: accent,
+            textShadow: isDark ? "0 0 40px rgba(0,212,255,0.2)" : "none",
+          }}
+        >
+          {result.wpm}
+        </motion.div>
+      </div> */}
       <div className="text-center mb-8">
         <div className="text-xs uppercase tracking-widest mb-3" style={{ color: muted, fontFamily: "var(--font-mono)", letterSpacing: "0.2em" }}>
           result
@@ -51,39 +72,40 @@ export function Results({ result, isDark, onRestart }: ResultsProps) {
           </motion.div>
           <div className="mb-3 text-left">
             <div className="font-mono text-sm font-bold" style={{ color: muted }}>WPM</div>
-            <div className="font-mono text-xs" style={{ color: isDark ? "var(--text-muted)" : "#b0c4d8" }}>words/min</div>
+            <div className="font-mono text-xs" style={{ color: muted }}>words/min</div>
           </div>
         </div>
       </div>
 
-      {/* Secondary stats */}
+      {/* Secondary stats row */}
+      {/* <div className="flex items-start gap-10 mb-10 flex-wrap"> */}
       <div
         className="grid grid-cols-4 rounded-xl overflow-hidden mb-6"
-        style={{ border: `1px solid ${border}` }}
+        style={{ border: `1px solid ${divider}` }}
       >
         {secondaryStats.map((s, i) => (
           <motion.div
             key={s.label}
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 + i * 0.06, duration: 0.3 }}
-            className="text-center py-5 px-2"
+            transition={{ delay: 0.12 + i * 0.05, duration: 0.3 }}
+            className="text-center py-3 px-2"
             style={{
-              background: cardBg,
-              borderRight: i < 3 ? `1px solid ${border}` : "none",
+              // background: accent,
+              borderRight: i < 3 ? `1px solid ${divider}` : "none",
             }}
           >
             <div
-              className="font-mono font-bold tabular-nums mb-1"
-              style={{ fontSize: "1.35rem", color: primary }}
-            >
-              {s.value}{s.suffix}
-            </div>
-            <div
-              className="text-xs uppercase"
-              style={{ color: muted, fontFamily: "var(--font-mono)", letterSpacing: "0.12em" }}
+              className="text-xs uppercase mb-1"
+              style={{ color: muted, fontFamily: "var(--font-mono)", letterSpacing: "0.14em" }}
             >
               {s.label}
+            </div>
+            <div
+              className="font-mono font-semibold tabular-nums"
+              style={{ fontSize: "1.75rem", color: primary }}
+            >
+              {s.value}
             </div>
           </motion.div>
         ))}
@@ -92,21 +114,22 @@ export function Results({ result, isDark, onRestart }: ResultsProps) {
       {/* Restart button */}
       <div className="flex justify-center">
         <motion.button
-          whileHover={{ scale: 1.02, boxShadow: isDark ? "0 0 24px rgba(0,212,255,0.25)" : "0 4px 16px rgba(0,153,187,0.2)" }}
-          whileTap={{ scale: 0.97 }}
+          whileHover={{
+            color: accent,
+            background: isDark ? "rgba(0,212,255,0.06)" : "rgba(196,124,43,0.08)",
+          }}
+          whileTap={{ scale: 0.96 }}
           onClick={onRestart}
-          className="flex items-center gap-2.5 px-8 py-3 rounded-xl text-sm font-semibold transition-all duration-200"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-150"
           style={{
-            background: isDark
-              ? "linear-gradient(135deg, rgba(0,212,255,0.15), rgba(0,212,255,0.08))"
-              : "linear-gradient(135deg, #0099bb, #007a99)",
-            border: `1px solid ${isDark ? "rgba(0,212,255,0.3)" : "transparent"}`,
-            color: isDark ? "var(--cyan)" : "#ffffff",
+            color: muted,
+            background: isDark ? "var(--bg-surface)" : "rgba(0,0,0,0.04)",
+            border: `1px solid ${divider}`,
             fontFamily: "var(--font-mono)",
             letterSpacing: "0.04em",
           }}
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
             <path d="M1 4v6h6M3.51 15a9 9 0 1 0 .49-3.03" />
           </svg>
           restart
