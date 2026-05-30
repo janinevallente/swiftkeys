@@ -10,100 +10,149 @@ interface ResultsProps {
 }
 
 export function Results({ result, isDark, onRestart }: ResultsProps) {
-  const accent = isDark ? "var(--cyan)" : "#c47c2b";
-  const muted = isDark ? "var(--text-muted)" : "#b8a080";
-  const secondary = isDark ? "var(--text-secondary)" : "#7a6858";
-  const primary = isDark ? "var(--text-primary)" : "#2a1f0e";
-  const divider = isDark ? "var(--border-subtle)" : "#d8c8b0";
-
   const secondaryStats = [
-    { label: "accuracy", value: `${result.accuracy}%` },
-    { label: "correct", value: String(result.correct) },
-    { label: "errors", value: String(result.incorrect) },
-    { label: "time", value: `${Math.round(result.duration)}s` },
+    { label: "ACCURACY", value: `${result.accuracy}%`, color: "var(--amber)" },
+    { label: "CORRECT",  value: String(result.correct),   color: "var(--cyan)" },
+    { label: "ERRORS",   value: String(result.incorrect),  color: result.incorrect > 0 ? "var(--red)" : "var(--cyan)" },
+    { label: "TIME",     value: `${Math.round(result.duration)}s`, color: "var(--text-secondary)" },
   ];
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
       className="w-full"
     >
-      {/* WPM hero */}
-      {/* <div className="mb-10">
-        <div
-          className="text-xs uppercase mb-2 tracking-widest"
-          style={{ color: muted, fontFamily: "var(--font-mono)", letterSpacing: "0.2em" }}
-        >
-          wpm
-        </div>
+      {/* Game-over header */}
+      <div className="text-center mb-6">
         <motion.div
-          initial={{ scale: 0.88, opacity: 0 }}
+          initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.08, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-          className="font-mono font-bold leading-none tabular-nums"
+          transition={{ delay: 0.05, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           style={{
-            fontSize: "clamp(4.5rem, 14vw, 7rem)",
-            color: accent,
-            textShadow: isDark ? "0 0 40px rgba(0,212,255,0.2)" : "none",
+            fontFamily: "var(--font-pixel)",
+            fontSize: "0.7rem",
+            color: "var(--amber)",
+            letterSpacing: "0.2em",
+            marginBottom: "6px",
           }}
         >
-          {result.wpm}
+          ★ STAGE CLEAR ★
         </motion.div>
-      </div> */}
-      <div className="text-center mb-8">
-        <div className="text-xs uppercase tracking-widest mb-3" style={{ color: muted, fontFamily: "var(--font-mono)", letterSpacing: "0.2em" }}>
-          result
-        </div>
-        <div className="flex items-end justify-center gap-3">
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="font-mono font-bold leading-none tabular-nums"
-            style={{
-              fontSize: "clamp(5rem, 18vw, 7rem)",
-              color: accent,
-              textShadow: isDark ? "0 0 40px rgba(0,212,255,0.25)" : "none",
-            }}
-          >
-            {result.wpm}
-          </motion.div>
-          <div className="mb-3 text-left">
-            <div className="font-mono text-sm font-bold" style={{ color: muted }}>WPM</div>
-            <div className="font-mono text-xs" style={{ color: muted }}>words/min</div>
-          </div>
+        <div
+          style={{
+            fontFamily: "var(--font-pixel)",
+            fontSize: "0.4rem",
+            color: "var(--text-muted)",
+            letterSpacing: "0.15em",
+          }}
+        >
+          PLAYER 1 RESULTS
         </div>
       </div>
 
-      {/* Secondary stats row */}
-      {/* <div className="flex items-start gap-10 mb-10 flex-wrap"> */}
+      {/* WPM hero — pixel display panel */}
+      <div className="flex justify-center mb-6">
+        <motion.div
+          initial={{ scale: 0.85, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.1, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+          style={{
+            background: "var(--bg-surface)",
+            border: "2px solid var(--cyan)",
+            boxShadow: "6px 6px 0px var(--cyan-dim), 0 0 28px var(--cyan-glow)",
+            padding: "18px 36px",
+            textAlign: "center",
+            position: "relative",
+          }}
+        >
+          {/* Corner decorations */}
+          <CornerDeco pos="top-left" />
+          <CornerDeco pos="top-right" />
+          <CornerDeco pos="bottom-left" />
+          <CornerDeco pos="bottom-right" />
+
+          <div
+            style={{
+              fontFamily: "var(--font-pixel)",
+              fontSize: "0.4rem",
+              color: "var(--text-muted)",
+              letterSpacing: "0.2em",
+              marginBottom: "8px",
+            }}
+          >
+            FINAL SCORE
+          </div>
+          <div
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: "clamp(4rem, 14vw, 6.5rem)",
+              fontWeight: "bold",
+              color: "var(--cyan)",
+              textShadow: "0 0 24px var(--cyan-glow-strong), 0 0 48px var(--cyan-glow)",
+              lineHeight: 1,
+              letterSpacing: "0.04em",
+            }}
+          >
+            {result.wpm}
+          </div>
+          <div
+            style={{
+              fontFamily: "var(--font-pixel)",
+              fontSize: "0.5rem",
+              color: "var(--text-secondary)",
+              letterSpacing: "0.15em",
+              marginTop: "8px",
+            }}
+          >
+            WPM
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Secondary stats grid */}
       <div
-        className="grid grid-cols-4 rounded-xl overflow-hidden mb-6"
-        style={{ border: `1px solid ${divider}` }}
+        className="grid grid-cols-4 mb-6"
+        style={{
+          border: "2px solid var(--border-strong)",
+          boxShadow: "4px 4px 0px var(--border-strong)",
+          background: "var(--bg-surface)",
+        }}
       >
         {secondaryStats.map((s, i) => (
           <motion.div
             key={s.label}
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.12 + i * 0.05, duration: 0.3 }}
-            className="text-center py-3 px-2"
+            transition={{ delay: 0.14 + i * 0.06, duration: 0.3 }}
             style={{
-              // background: accent,
-              borderRight: i < 3 ? `1px solid ${divider}` : "none",
+              borderRight: i < 3 ? "2px solid var(--border-strong)" : "none",
+              padding: "14px 10px",
+              textAlign: "center",
             }}
           >
             <div
-              className="text-xs uppercase mb-1"
-              style={{ color: muted, fontFamily: "var(--font-mono)", letterSpacing: "0.14em" }}
+              style={{
+                fontFamily: "var(--font-pixel)",
+                fontSize: "0.35rem",
+                color: "var(--text-muted)",
+                letterSpacing: "0.14em",
+                marginBottom: "8px",
+              }}
             >
               {s.label}
             </div>
             <div
-              className="font-mono font-semibold tabular-nums"
-              style={{ fontSize: "1.75rem", color: primary }}
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "1.8rem",
+                fontWeight: "bold",
+                color: s.color,
+                textShadow: `0 0 10px ${s.color}55`,
+                letterSpacing: "0.04em",
+                lineHeight: 1,
+              }}
             >
               {s.value}
             </div>
@@ -114,27 +163,51 @@ export function Results({ result, isDark, onRestart }: ResultsProps) {
       {/* Restart button */}
       <div className="flex justify-center">
         <motion.button
-          whileHover={{
-            color: accent,
-            background: isDark ? "rgba(0,212,255,0.06)" : "rgba(196,124,43,0.08)",
-          }}
-          whileTap={{ scale: 0.96 }}
+          whileTap={{ scale: 0.94 }}
           onClick={onRestart}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-150"
           style={{
-            color: muted,
-            background: isDark ? "var(--bg-surface)" : "rgba(0,0,0,0.04)",
-            border: `1px solid ${divider}`,
-            fontFamily: "var(--font-mono)",
-            letterSpacing: "0.04em",
+            fontFamily: "var(--font-pixel)",
+            fontSize: "0.5rem",
+            letterSpacing: "0.15em",
+            padding: "10px 24px",
+            background: "var(--bg-base)",
+            color: "var(--cyan)",
+            border: "2px solid var(--cyan)",
+            boxShadow: "4px 4px 0px var(--cyan-dim), 0 0 12px var(--cyan-glow)",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+          }}
+          onMouseEnter={e => {
+            (e.currentTarget as HTMLButtonElement).style.background = "var(--cyan)";
+            (e.currentTarget as HTMLButtonElement).style.color = "var(--bg-base)";
+          }}
+          onMouseLeave={e => {
+            (e.currentTarget as HTMLButtonElement).style.background = "var(--bg-base)";
+            (e.currentTarget as HTMLButtonElement).style.color = "var(--cyan)";
           }}
         >
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="square">
             <path d="M1 4v6h6M3.51 15a9 9 0 1 0 .49-3.03" />
           </svg>
-          restart
+          PLAY AGAIN
         </motion.button>
       </div>
     </motion.div>
   );
+}
+
+function CornerDeco({ pos }: { pos: "top-left" | "top-right" | "bottom-left" | "bottom-right" }) {
+  const style: React.CSSProperties = {
+    position: "absolute",
+    width: "8px",
+    height: "8px",
+    border: "2px solid var(--amber)",
+  };
+  if (pos === "top-left")     { style.top = "-2px"; style.left = "-2px";  style.borderRight = "none"; style.borderBottom = "none"; }
+  if (pos === "top-right")    { style.top = "-2px"; style.right = "-2px"; style.borderLeft = "none";  style.borderBottom = "none"; }
+  if (pos === "bottom-left")  { style.bottom = "-2px"; style.left = "-2px";  style.borderRight = "none"; style.borderTop = "none"; }
+  if (pos === "bottom-right") { style.bottom = "-2px"; style.right = "-2px"; style.borderLeft = "none";  style.borderTop = "none"; }
+  return <span style={style} />;
 }

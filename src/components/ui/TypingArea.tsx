@@ -31,76 +31,108 @@ export function TypingArea({ chars, cursor, isDark }: TypingAreaProps) {
     }
   }, [cursor]);
 
-  const untypedColor = isDark ? "var(--text-muted)" : "#c0a888";
-  const correctColor = isDark ? "var(--text-secondary)" : "#6a5840";
-  const incorrectColor = isDark ? "var(--red)" : "#cc3333";
-  const cursorColor = isDark ? "var(--cyan)" : "#c47c2b";
+  const untypedColor = "var(--text-muted)";
+  const correctColor = "var(--cyan)";
+  const incorrectColor = "var(--red)";
+  const cursorColor = "var(--amber)";
 
   return (
     <div
-      ref={containerRef}
-      className="relative w-full overflow-hidden"
-      style={{ maxHeight: "172px" }}
+      style={{
+        background: "var(--bg-surface)",
+        border: "2px solid var(--border-strong)",
+        boxShadow: "4px 4px 0px var(--border-strong), 0 0 20px var(--cyan-glow)",
+        padding: "20px 24px 24px",
+        position: "relative",
+      }}
     >
-      {/* Bottom fade */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-12 pointer-events-none z-10"
-        style={{
-          background: isDark
-            ? "linear-gradient(to top, var(--bg-base), transparent)"
-            : "linear-gradient(to top, #f5f0e8, transparent)",
-        }}
-      />
+      {/* Corner decorations */}
+      <CornerDeco pos="top-left" />
+      <CornerDeco pos="top-right" />
+      <CornerDeco pos="bottom-left" />
+      <CornerDeco pos="bottom-right" />
 
       <div
-        className="font-mono select-none pb-5"
-        style={{
-          fontSize: "1.5rem",
-          lineHeight: "2.9rem",
-          wordBreak: "break-word",
-          whiteSpace: "pre-wrap",
-          letterSpacing: "0.01em",
-          color: untypedColor,
-        }}
+        ref={containerRef}
+        className="relative w-full overflow-hidden"
+        style={{ maxHeight: "172px" }}
       >
-        {chars.map((c, i) => {
-          const isActive = i === cursor;
-          return (
-            <span key={i} className="relative inline-block">
-              {isActive && (
-                <motion.span
-                  ref={cursorRef}
-                  className="absolute rounded-sm"
+        {/* Bottom fade */}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-10 pointer-events-none z-10"
+          style={{
+            background: "linear-gradient(to top, var(--bg-surface), transparent)",
+          }}
+        />
+
+        <div
+          className="select-none pb-5"
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: "1.6rem",
+            lineHeight: "3rem",
+            wordBreak: "break-word",
+            whiteSpace: "pre-wrap",
+            letterSpacing: "0.04em",
+            color: untypedColor,
+          }}
+        >
+          {chars.map((c, i) => {
+            const isActive = i === cursor;
+            return (
+              <span key={i} className="relative inline-block">
+                {isActive && (
+                  <motion.span
+                    ref={cursorRef}
+                    className="absolute"
+                    style={{
+                      left: "0px",
+                      top: "4px",
+                      bottom: "4px",
+                      width: "3px",
+                      background: cursorColor,
+                      boxShadow: `0 0 8px ${cursorColor}, 0 0 16px rgba(255,184,0,0.4)`,
+                    }}
+                    animate={{ opacity: [1, 1, 0, 0] }}
+                    transition={{ duration: 0.9, repeat: Infinity, ease: "linear", times: [0, 0.45, 0.45, 1] }}
+                  />
+                )}
+                <span
                   style={{
-                    left: "-1px",
-                    top: "5px",
-                    bottom: "5px",
-                    width: "2px",
-                    background: cursorColor,
-                    boxShadow: isDark
-                      ? `0 0 6px ${cursorColor}, 0 0 12px rgba(0,212,255,0.25)`
-                      : `0 0 6px rgba(196,124,43,0.5)`,
+                    color:
+                      c.state === "correct" ? correctColor
+                      : c.state === "incorrect" ? incorrectColor
+                      : untypedColor,
+                    textShadow:
+                      c.state === "correct"
+                        ? "0 0 8px var(--cyan-glow-strong)"
+                        : c.state === "incorrect"
+                        ? "0 0 8px rgba(255,60,60,0.5)"
+                        : "none",
+                    textDecoration: c.state === "incorrect" ? `underline ${incorrectColor}` : "none",
                   }}
-                  animate={{ opacity: [1, 1, 0, 0] }}
-                  transition={{ duration: 1, repeat: Infinity, ease: "linear", times: [0, 0.5, 0.5, 1] }}
-                />
-              )}
-              <span
-                style={{
-                  color:
-                    c.state === "correct" ? correctColor
-                    : c.state === "incorrect" ? incorrectColor
-                    : untypedColor,
-                  textDecoration: c.state === "incorrect" ? `underline ${incorrectColor}` : "none",
-                  transition: "color 0.06s",
-                }}
-              >
-                {c.char === " " ? "\u00a0" : c.char}
+                >
+                  {c.char === " " ? "\u00a0" : c.char}
+                </span>
               </span>
-            </span>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );
+}
+
+function CornerDeco({ pos }: { pos: "top-left" | "top-right" | "bottom-left" | "bottom-right" }) {
+  const style: React.CSSProperties = {
+    position: "absolute",
+    width: "8px",
+    height: "8px",
+    border: "2px solid var(--cyan)",
+  };
+  if (pos === "top-left") { style.top = "-2px"; style.left = "-2px"; style.borderRight = "none"; style.borderBottom = "none"; }
+  if (pos === "top-right") { style.top = "-2px"; style.right = "-2px"; style.borderLeft = "none"; style.borderBottom = "none"; }
+  if (pos === "bottom-left") { style.bottom = "-2px"; style.left = "-2px"; style.borderRight = "none"; style.borderTop = "none"; }
+  if (pos === "bottom-right") { style.bottom = "-2px"; style.right = "-2px"; style.borderLeft = "none"; style.borderTop = "none"; }
+  return <span style={style} />;
 }

@@ -47,7 +47,6 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
     prevStatus.current = status;
   }, [status, playFinish]);
 
-  // Use a ref for handleKeyPress so the event listener never goes stale
   const handleKeyPressRef = useRef(handleKeyPress);
   handleKeyPressRef.current = handleKeyPress;
 
@@ -102,16 +101,14 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
     inputRef.current?.focus();
   }, [restart]);
 
-  const handleDuration = (d: number) => { setDuration(d); restart(); };
+  const handleDuration   = (d: number)     => { setDuration(d);   restart(); };
   const handleDifficulty = (d: Difficulty) => { setDifficulty(d); restart(); };
-
-  const hintColor = isDark ? "var(--text-muted)" : "#b8a080";
 
   return (
     <div className="w-full flex flex-col gap-0">
 
-      {/*toolbar (controls + restart) — below text */}
-      <div className="mb-8 flex items-center justify-between gap-4">
+      {/* Control bar */}
+      <div className="mb-6 flex items-center justify-between gap-4">
         <ControlBar
           duration={duration}
           difficulty={difficulty}
@@ -128,7 +125,6 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
       <AnimatePresence mode="wait">
         {status === "finished" && result ? (
 
-          /* ── Results screen ── */
           <motion.div
             key="results"
             initial={{ opacity: 0, y: 10 }}
@@ -141,7 +137,6 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
 
         ) : (
 
-          /* ── Typing screen ── */
           <motion.div
             key="test"
             initial={{ opacity: 0 }}
@@ -150,8 +145,8 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
             transition={{ duration: 0.2 }}
             className="flex flex-col"
           >
-            {/* live stats (wpm / acc / timer) — left-aligned, muted */}
-            <div className="mb-3">
+            {/* Stats */}
+            <div className="mb-2">
               <StatsBar
                 wpm={liveWpm}
                 accuracy={accuracy}
@@ -161,7 +156,7 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
               />
             </div>
 
-            {/* typing area — no card, text directly on bg */}
+            {/* Typing area */}
             <div className="relative" onClick={focusInput}>
               <input
                 ref={inputRef}
@@ -176,28 +171,34 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
 
               {!focused && (
                 <div
-                  className="absolute inset-0 flex items-center justify-center z-10 backdrop-blur-sm rounded-lg text-sm"
-                  style={{ color: hintColor }}
+                  className="absolute inset-0 flex items-center justify-center z-10 backdrop-blur-sm text-sm"
+                  style={{
+                    color: "var(--text-secondary)",
+                    fontFamily: "var(--font-pixel)",
+                    fontSize: "0.5rem",
+                    letterSpacing: "0.15em",
+                  }}
                 >
-                  click to focus
+                  ▶ CLICK TO FOCUS
                 </div>
               )}
 
               <TypingArea chars={chars} cursor={cursor} isDark={isDark} />
             </div>
 
-
-
-            {/* hint */}
+            {/* Hint */}
             <div
-              className="mt-10 text-center text-xs"
+              className="mt-6 text-center select-none"
               style={{
-                color: isDark ? "var(--text-dim)" : "#c8b898",
-                fontFamily: "var(--font-mono)",
-                letterSpacing: "0.1em",
+                fontFamily: "var(--font-pixel)",
+                fontSize: "0.43rem",
+                color: "var(--text-dim)",
+                letterSpacing: "0.14em",
               }}
             >
-              {status === "idle" ? "start typing  ·  tab to restart" : "tab to restart"}
+              {status === "idle"
+                ? "▶ START TYPING  ·  TAB TO RESTART"
+                : "TAB TO RESTART"}
             </div>
           </motion.div>
         )}

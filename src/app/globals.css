@@ -1,35 +1,75 @@
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --font-mono: "Space Mono", monospace;
-  --font-sans: "Space Grotesk", sans-serif;
+  --font-mono: "VT323", monospace;
+  --font-pixel: "Press Start 2P", monospace;
+  --font-sans: "VT323", monospace;
 
-  /* SwiftKeys dark palette */
-  --bg-base: #080c14;
-  --bg-surface: #0d1320;
-  --bg-card: #111827;
-  --bg-elevated: #162033;
-  --border-subtle: #1e2d42;
-  --border-strong: #2a3f5a;
+  /* ── DARK MODE (default) ──────────────────────────────
+     Primary:   #0D1117  (deep GitHub-dark background)
+     Secondary: #5D8C3E  (muted forest green — accent)
+     Text:      #F0F6FC  (near-white)
+  ───────────────────────────────────────────────────── */
+  --bg-base: #0d1117;
+  --bg-surface: #161b22;
+  --bg-card: #1c2128;
+  --bg-elevated: #22272e;
+  --border-subtle: #2a3a2a;
+  --border-strong: #3d5c2e;
 
-  /* Accents */
-  --cyan: #00d4ff;
-  --cyan-dim: #0099bb;
-  --cyan-glow: rgba(0, 212, 255, 0.15);
-  --cyan-glow-strong: rgba(0, 212, 255, 0.3);
-  --red: #ff4d6a;
-  --green: #00e5a0;
-  --green-dim: rgba(0, 229, 160, 0.7);
+  /* Accent — forest green family */
+  --cyan: #5d8c3e;
+  --cyan-dim: #3f6128;
+  --cyan-glow: rgba(93, 140, 62, 0.15);
+  --cyan-glow-strong: rgba(93, 140, 62, 0.35);
+
+  /* Status colors */
+  --red: #f85149;
+  --green: #5d8c3e;
+  --green-dim: rgba(93, 140, 62, 0.6);
+  --amber: #8fb86a; /* lighter green used as "amber" accent */
+  --magenta: #7cb87c;
 
   /* Text */
-  --text-primary: #e8f4ff;
-  --text-secondary: #7a9ab8;
-  --text-muted: #3a5470;
-  --text-dim: #1e3048;
+  --text-primary: #f0f6fc;
+  --text-secondary: #8fb86a;
+  --text-muted: #4a6e33;
+  --text-dim: #2c4220;
+}
+
+/* ── LIGHT MODE ────────────────────────────────────────
+   Primary:   black  / near-black backgrounds
+   Secondary: gray   / mid-gray accents
+   Text:      white  / near-white on dark surfaces
+   (inverted retro: black cabinet with gray panels)
+──────────────────────────────────────────────────── */
+body.light {
+  --bg-base: #ffffff;
+  --bg-surface: #f0f0f0;
+  --bg-card: #e8e8e8;
+  --bg-elevated: #dcdcdc;
+  --border-subtle: #c0c0c0;
+  --border-strong: #888888;
+
+  --cyan: #222222;
+  --cyan-dim: #444444;
+  --cyan-glow: rgba(0, 0, 0, 0.1);
+  --cyan-glow-strong: rgba(0, 0, 0, 0.22);
+
+  --red: #cc2222;
+  --green: #222222;
+  --green-dim: rgba(0, 0, 0, 0.5);
+  --amber: #555555;
+  --magenta: #666666;
+
+  --text-primary: #111111;
+  --text-secondary: #444444;
+  --text-muted: #888888;
+  --text-dim: #bbbbbb;
 }
 
 * {
@@ -47,9 +87,10 @@ body {
 }
 
 body {
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: var(--font-mono);
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: none;
+  image-rendering: pixelated;
   background: var(--bg-base);
   color: var(--text-primary);
 }
@@ -63,32 +104,104 @@ main {
 .font-mono {
   font-family: var(--font-mono) !important;
 }
+.font-pixel {
+  font-family: var(--font-pixel) !important;
+}
 
 ::-webkit-scrollbar {
-  width: 3px;
+  width: 4px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--bg-base);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--border-strong);
-  border-radius: 99px;
+  border-radius: 0;
 }
 
-/* Noise texture overlay */
+/* CRT scanline overlay */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.12) 2px,
+    rgba(0, 0, 0, 0.12) 4px
+  );
   pointer-events: none;
-  z-index: 0;
-  opacity: 0.4;
+  z-index: 9999;
 }
 
-/* Glow utility */
-.glow-cyan {
+/* CRT flicker */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  animation: flicker 8s infinite;
+}
+
+@keyframes flicker {
+  0%,
+  95%,
+  100% {
+    opacity: 1;
+  }
+  96% {
+    opacity: 0.92;
+  }
+  97% {
+    opacity: 1;
+  }
+  98% {
+    opacity: 0.95;
+  }
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes scanroll {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 100px;
+  }
+}
+
+/* Pixel border utilities */
+.pixel-box {
+  border: 2px solid var(--cyan);
   box-shadow:
-    0 0 20px var(--cyan-glow),
-    0 0 40px rgba(0, 212, 255, 0.08);
+    inset 0 0 0 1px var(--bg-base),
+    4px 4px 0px var(--cyan-dim),
+    0 0 16px var(--cyan-glow);
+  image-rendering: pixelated;
+}
+
+.pixel-box-amber {
+  border: 2px solid var(--amber);
+  box-shadow:
+    inset 0 0 0 1px var(--bg-base),
+    4px 4px 0px rgba(143, 184, 106, 0.4),
+    0 0 16px rgba(143, 184, 106, 0.12);
+}
+
+.glow-cyan {
+  text-shadow:
+    0 0 8px var(--cyan),
+    0 0 20px var(--cyan-glow-strong);
 }
