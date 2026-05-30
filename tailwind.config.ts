@@ -65,15 +65,8 @@ const config: Config = {
         "hero-box": "6px 6px 0px var(--cyan-dim), 0 0 28px var(--cyan-glow)",
       },
       backgroundImage: {
-        "grid-dark":
-          "linear-gradient(rgba(93,140,62,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(93,140,62,0.04) 1px, transparent 1px)",
-        "grid-light":
-          "linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px)",
         "fade-surface":
           "linear-gradient(to top, var(--bg-surface), transparent)",
-      },
-      backgroundSize: {
-        grid: "32px 32px",
       },
       maxWidth: {
         content: "920px",

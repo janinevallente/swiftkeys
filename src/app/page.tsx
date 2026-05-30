@@ -33,14 +33,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-bg-base">
-
-      {/* Pixel grid background */}
-      <div
-        className={`fixed inset-0 pointer-events-none z-0 bg-grid ${
-          isDark ? "bg-grid-dark" : "bg-grid-light"
-        }`}
-      />
-
       {/* Navbar */}
       <motion.nav
         initial={{ opacity: 0, y: -8 }}
