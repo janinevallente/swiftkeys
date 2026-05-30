@@ -34,21 +34,13 @@ export function ControlBar({
 
   return (
     <div className="flex items-center justify-between w-full flex-wrap gap-y-3">
-      {/* Left: duration + difficulty pixel buttons */}
+
+      {/* Left: duration + difficulty groups */}
       <div className="flex items-center gap-3 flex-wrap">
-        {/* Duration group */}
+
+        {/* Duration */}
         <div className="flex items-center gap-1">
-          <span
-            style={{
-              fontFamily: "var(--font-pixel)",
-              fontSize: "0.4rem",
-              color: "var(--text-muted)",
-              letterSpacing: "0.1em",
-              marginRight: "4px",
-            }}
-          >
-            TIME
-          </span>
+          <span className="font-pixel text-4xs text-text-muted tracking-wider2 mr-1">TIME</span>
           {durations.map((d) => (
             <PixelBtn
               key={d}
@@ -62,28 +54,12 @@ export function ControlBar({
           ))}
         </div>
 
-        {/* Pixel divider */}
-        <div
-          style={{
-            width: "2px",
-            height: "20px",
-            background: "var(--border-strong)",
-          }}
-        />
+        {/* Divider */}
+        <div className="w-px h-5 bg-border-strong" />
 
-        {/* Difficulty group */}
+        {/* Difficulty */}
         <div className="flex items-center gap-1">
-          <span
-            style={{
-              fontFamily: "var(--font-pixel)",
-              fontSize: "0.4rem",
-              color: "var(--text-muted)",
-              letterSpacing: "0.1em",
-              marginRight: "4px",
-            }}
-          >
-            LVL
-          </span>
+          <span className="font-pixel text-4xs text-text-muted tracking-wider2 mr-1">LVL</span>
           {difficulties.map((d) => (
             <PixelBtn
               key={d}
@@ -92,14 +68,13 @@ export function ControlBar({
               onClick={() => { if (!disabled) onDifficulty(d); }}
               amber={true}
             >
-              {/* {d === "easy" ? "1P" : d === "medium" ? "2P" : "3P"} */}
-              {d?.toUpperCase()}
+              {d.toUpperCase()}
             </PixelBtn>
           ))}
         </div>
       </div>
 
-      {/* Right: icon action buttons */}
+      {/* Right: icon buttons */}
       <div className="flex items-center gap-2">
         <PixelIconBtn onClick={onToggleSound} title={soundEnabled ? "Mute" : "Unmute"}>
           {soundEnabled ? <Volume2 size={13} strokeWidth={2} /> : <VolumeX size={13} strokeWidth={2} />}
@@ -125,53 +100,33 @@ function PixelBtn({
   onClick: () => void;
   amber: boolean;
 }) {
-  const accentColor = amber ? "var(--amber)" : "var(--cyan)";
-  const accentGlow = amber ? "rgba(255,184,0,0.25)" : "var(--cyan-glow)";
-  const accentShadow = amber ? "rgba(255,184,0,0.35)" : "var(--cyan-dim)";
+  // Dynamic classes based on active/disabled/amber state
+  const base = "font-pixel text-6xs tracking-pixel border-2 cursor-pointer transition-none";
+
+  const activeClass = amber
+    ? "bg-amber text-bg-base border-amber shadow-pixel-accent"
+    : "bg-accent text-bg-base border-accent shadow-pixel-accent";
+
+  const idleClass = amber
+    ? "bg-bg-surface text-amber border-border-strong shadow-pixel-base hover:border-amber"
+    : "bg-bg-surface text-accent border-border-strong shadow-pixel-base hover:border-accent";
+
+  const disabledClass = "bg-bg-surface text-text-dim border-border-subtle shadow-pixel-base opacity-35 cursor-not-allowed";
+
+  const className = [
+    base,
+    "px-2 py-1",
+    active ? activeClass : disabled ? disabledClass : idleClass,
+  ].join(" ");
 
   return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      style={{
-        fontFamily: "var(--font-pixel)",
-        fontSize: "0.45rem",
-        letterSpacing: "0.05em",
-        padding: "5px 9px",
-        background: active ? accentColor : "var(--bg-surface)",
-        color: active ? "var(--bg-base)" : disabled ? "var(--text-dim)" : accentColor,
-        border: `2px solid ${active ? accentColor : disabled ? "var(--border-subtle)" : "var(--border-strong)"}`,
-        boxShadow: active ? `2px 2px 0px ${accentShadow}, 0 0 10px ${accentGlow}` : "2px 2px 0px var(--bg-base)",
-        cursor: disabled ? "not-allowed" : "pointer",
-        opacity: disabled && !active ? 0.35 : 1,
-        transition: "none",
-        imageRendering: "pixelated",
-      }}
-      onMouseEnter={e => {
-        if (!disabled && !active) {
-          (e.currentTarget as HTMLButtonElement).style.borderColor = accentColor;
-          (e.currentTarget as HTMLButtonElement).style.color = accentColor;
-          (e.currentTarget as HTMLButtonElement).style.boxShadow = `2px 2px 0px ${accentShadow}`;
-        }
-      }}
-      onMouseLeave={e => {
-        if (!disabled && !active) {
-          (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--border-strong)";
-          (e.currentTarget as HTMLButtonElement).style.color = accentColor;
-          (e.currentTarget as HTMLButtonElement).style.boxShadow = "2px 2px 0px var(--bg-base)";
-        }
-      }}
-    >
+    <button onClick={onClick} disabled={disabled} className={className}>
       {children}
     </button>
   );
 }
 
-function PixelIconBtn({
-  children,
-  onClick,
-  title,
-}: {
+function PixelIconBtn({ children, onClick, title }: {
   children: React.ReactNode;
   onClick: () => void;
   title: string;
@@ -181,28 +136,7 @@ function PixelIconBtn({
       whileTap={{ scale: 0.9 }}
       onClick={onClick}
       title={title}
-      style={{
-        color: "var(--text-muted)",
-        background: "var(--bg-surface)",
-        border: "2px solid var(--border-strong)",
-        cursor: "pointer",
-        padding: "5px 7px",
-        boxShadow: "2px 2px 0px var(--bg-base)",
-        lineHeight: 1,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-      onMouseEnter={e => {
-        (e.currentTarget as HTMLButtonElement).style.color = "var(--cyan)";
-        (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--cyan)";
-        (e.currentTarget as HTMLButtonElement).style.boxShadow = "2px 2px 0px var(--cyan-dim)";
-      }}
-      onMouseLeave={e => {
-        (e.currentTarget as HTMLButtonElement).style.color = "var(--text-muted)";
-        (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--border-strong)";
-        (e.currentTarget as HTMLButtonElement).style.boxShadow = "2px 2px 0px var(--bg-base)";
-      }}
+      className="flex items-center justify-center bg-bg-surface text-text-muted border-2 border-border-strong shadow-pixel-base cursor-pointer p-1.5 hover:text-accent hover:border-accent hover:shadow-pixel-accent transition-colors duration-150"
     >
       {children}
     </motion.button>

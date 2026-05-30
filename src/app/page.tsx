@@ -24,35 +24,21 @@ export default function Home() {
     setIsDark((d) => {
       const next = !d;
       localStorage.setItem("sk-theme", next ? "dark" : "light");
-      if (next) {
-        document.body.classList.remove("light");
-      } else {
-        document.body.classList.add("light");
-      }
+      document.body.classList.toggle("light", !next);
       return next;
     });
   };
 
   if (!mounted) return null;
 
-  /* Grid line color matches --cyan in each mode */
-  const gridColor = isDark
-    ? "rgba(93,140,62,0.04)"   /* dark: subtle green */
-    : "rgba(0,0,0,0.05)";      /* light: subtle black */
-
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "var(--bg-base)" }}>
+    <div className="min-h-screen flex flex-col bg-bg-base">
 
       {/* Pixel grid background */}
       <div
-        className="fixed inset-0 pointer-events-none z-0"
-        style={{
-          backgroundImage: `
-            linear-gradient(${gridColor} 1px, transparent 1px),
-            linear-gradient(90deg, ${gridColor} 1px, transparent 1px)
-          `,
-          backgroundSize: "32px 32px",
-        }}
+        className={`fixed inset-0 pointer-events-none z-0 bg-grid ${
+          isDark ? "bg-grid-dark" : "bg-grid-light"
+        }`}
       />
 
       {/* Navbar */}
@@ -60,43 +46,35 @@ export default function Home() {
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="relative z-20 flex items-center justify-between px-10 py-4 shrink-0"
-        style={{ borderBottom: "2px solid var(--border-subtle)" }}
+        className="relative z-20 flex items-center justify-between px-10 py-4 shrink-0 border-b-2 border-border-subtle"
       >
         {/* Logo */}
         <div className="flex items-center gap-4 select-none">
           <PixelLogo />
-            <div
-              style={{
-                fontFamily: "var(--font-pixel)",
-                fontSize: "0.75rem",
-                color: "var(--cyan)",
-                letterSpacing: "0.05em",
-                textShadow: "0 0 10px var(--cyan-glow-strong)",
-              }}
-            >
-              SWIFT<span style={{ color: "var(--amber)" }}>KEYS</span>
-            </div>
+          <div
+            className="font-pixel text-sm tracking-pixel text-accent"
+            style={{ textShadow: "0 0 10px var(--cyan-glow-strong)" }}
+          >
+            SWIFT<span className="text-amber">KEYS</span>
+          </div>
         </div>
 
-        {/* Right: theme toggle */}
-        <div className="flex items-center gap-6">
-          <NavIconBtn onClick={toggleTheme} title={isDark ? "light mode" : "dark mode"}>
-            {isDark ? (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <circle cx="12" cy="12" r="5"/>
-                <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-                <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-              </svg>
-            ) : (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-              </svg>
-            )}
-          </NavIconBtn>
-        </div>
+        {/* Theme toggle */}
+        <NavIconBtn onClick={toggleTheme} title={isDark ? "light mode" : "dark mode"}>
+          {isDark ? (
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <circle cx="12" cy="12" r="5"/>
+              <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+              <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+          ) : (
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          )}
+        </NavIconBtn>
       </motion.nav>
 
       {/* Main */}
@@ -105,24 +83,14 @@ export default function Home() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="w-full"
-          style={{ maxWidth: "920px" }}
+          className="w-full max-w-content"
         >
           <TypingTest isDark={isDark} onToggleTheme={toggleTheme} />
         </motion.div>
       </main>
 
       {/* Footer */}
-      <footer
-        className="relative z-10 flex items-center justify-between px-10 py-5 shrink-0 select-none"
-        style={{
-          // borderTop: "2px solid var(--border-subtle)",
-          fontFamily: "var(--font-pixel)",
-          fontSize: "0.43rem",
-          color: "var(--text-muted)",
-          letterSpacing: "0.1em",
-        }}
-      >
+      <footer className="relative z-10 flex items-center justify-between px-10 py-5 shrink-0 select-none font-pixel text-6xs text-text-muted tracking-wider2">
         <span>© 2026 SWIFTKEYS</span>
         <span>v1.0.0</span>
       </footer>
@@ -146,11 +114,7 @@ function PixelLogo() {
   );
 }
 
-function NavIconBtn({
-  children,
-  onClick,
-  title,
-}: {
+function NavIconBtn({ children, onClick, title }: {
   children: React.ReactNode;
   onClick: () => void;
   title: string;
@@ -159,22 +123,7 @@ function NavIconBtn({
     <button
       onClick={onClick}
       title={title}
-      style={{
-        color: "var(--text-secondary)",
-        background: "transparent",
-        border: "1px solid var(--border-strong)",
-        cursor: "pointer",
-        padding: "6px 8px",
-        lineHeight: 1,
-      }}
-      onMouseEnter={(e) => {
-        (e.currentTarget as HTMLButtonElement).style.color = "var(--cyan)";
-        (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--cyan)";
-      }}
-      onMouseLeave={(e) => {
-        (e.currentTarget as HTMLButtonElement).style.color = "var(--text-secondary)";
-        (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--border-strong)";
-      }}
+      className="text-text-sub border border-border-strong bg-transparent cursor-pointer px-2 py-1.5 leading-none hover:text-accent hover:border-accent transition-colors duration-150"
     >
       {children}
     </button>

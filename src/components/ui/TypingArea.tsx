@@ -11,17 +11,17 @@ interface TypingAreaProps {
 }
 
 export function TypingArea({ chars, cursor, isDark }: TypingAreaProps) {
-  const cursorRef = useRef<HTMLSpanElement | null>(null);
+  const cursorRef   = useRef<HTMLSpanElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (cursorRef.current && containerRef.current) {
-      const cursorEl = cursorRef.current;
-      const container = containerRef.current;
-      const cursorTop = cursorEl.offsetTop;
-      const cursorBottom = cursorTop + cursorEl.offsetHeight;
+      const cursorEl       = cursorRef.current;
+      const container      = containerRef.current;
+      const cursorTop      = cursorEl.offsetTop;
+      const cursorBottom   = cursorTop + cursorEl.offsetHeight;
       const containerHeight = container.clientHeight;
-      const scrollTop = container.scrollTop;
+      const scrollTop      = container.scrollTop;
       if (cursorBottom > scrollTop + containerHeight - 40) {
         container.scrollTo({ top: cursorTop - 56, behavior: "smooth" });
       }
@@ -31,51 +31,25 @@ export function TypingArea({ chars, cursor, isDark }: TypingAreaProps) {
     }
   }, [cursor]);
 
-  const untypedColor = "var(--text-muted)";
-  const correctColor = "var(--cyan)";
-  const incorrectColor = "var(--red)";
-  const cursorColor = "var(--amber)";
-
   return (
-    <div
-      style={{
-        background: "var(--bg-surface)",
-        border: "2px solid var(--border-strong)",
-        boxShadow: "4px 4px 0px var(--border-strong), 0 0 20px var(--cyan-glow)",
-        padding: "20px 24px 24px",
-        position: "relative",
-      }}
-    >
-      {/* Corner decorations */}
+    <div className="relative bg-bg-surface border-2 border-border-strong shadow-typing-box p-5 pb-6">
+
+      {/* Corner brackets */}
       <CornerDeco pos="top-left" />
       <CornerDeco pos="top-right" />
       <CornerDeco pos="bottom-left" />
       <CornerDeco pos="bottom-right" />
 
-      <div
-        ref={containerRef}
-        className="relative w-full overflow-hidden"
-        style={{ maxHeight: "172px" }}
-      >
-        {/* Bottom fade */}
-        <div
-          className="absolute bottom-0 left-0 right-0 h-10 pointer-events-none z-10"
-          style={{
-            background: "linear-gradient(to top, var(--bg-surface), transparent)",
-          }}
-        />
+      {/* Scrollable text container */}
+      <div ref={containerRef} className="relative w-full overflow-hidden max-h-typing">
 
+        {/* Bottom fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-10 pointer-events-none z-10 bg-fade-surface" />
+
+        {/* Characters */}
         <div
-          className="select-none pb-5"
-          style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: "1.6rem",
-            lineHeight: "3rem",
-            wordBreak: "break-word",
-            whiteSpace: "pre-wrap",
-            letterSpacing: "0.04em",
-            color: untypedColor,
-          }}
+          className="font-mono select-none pb-5 text-text-muted break-words whitespace-pre-wrap tracking-pixel"
+          style={{ fontSize: "1.6rem", lineHeight: "3rem" }}
         >
           {chars.map((c, i) => {
             const isActive = i === cursor;
@@ -84,15 +58,8 @@ export function TypingArea({ chars, cursor, isDark }: TypingAreaProps) {
                 {isActive && (
                   <motion.span
                     ref={cursorRef}
-                    className="absolute"
-                    style={{
-                      left: "0px",
-                      top: "4px",
-                      bottom: "4px",
-                      width: "3px",
-                      background: cursorColor,
-                      boxShadow: `0 0 8px ${cursorColor}, 0 0 16px rgba(255,184,0,0.4)`,
-                    }}
+                    className="absolute left-0 top-1 bottom-1 w-[3px] bg-amber"
+                    style={{ boxShadow: "0 0 8px var(--amber), 0 0 16px rgba(143,184,106,0.4)" }}
                     animate={{ opacity: [1, 1, 0, 0] }}
                     transition={{ duration: 0.9, repeat: Infinity, ease: "linear", times: [0, 0.45, 0.45, 1] }}
                   />
@@ -100,16 +67,14 @@ export function TypingArea({ chars, cursor, isDark }: TypingAreaProps) {
                 <span
                   style={{
                     color:
-                      c.state === "correct" ? correctColor
-                      : c.state === "incorrect" ? incorrectColor
-                      : untypedColor,
+                      c.state === "correct"   ? "var(--cyan)"
+                      : c.state === "incorrect" ? "var(--red)"
+                      : "var(--text-muted)",
                     textShadow:
-                      c.state === "correct"
-                        ? "0 0 8px var(--cyan-glow-strong)"
-                        : c.state === "incorrect"
-                        ? "0 0 8px rgba(255,60,60,0.5)"
-                        : "none",
-                    textDecoration: c.state === "incorrect" ? `underline ${incorrectColor}` : "none",
+                      c.state === "correct"   ? "0 0 8px var(--cyan-glow-strong)"
+                      : c.state === "incorrect" ? "0 0 8px rgba(255,60,60,0.5)"
+                      : "none",
+                    textDecoration: c.state === "incorrect" ? "underline var(--red)" : "none",
                   }}
                 >
                   {c.char === " " ? "\u00a0" : c.char}
@@ -124,15 +89,12 @@ export function TypingArea({ chars, cursor, isDark }: TypingAreaProps) {
 }
 
 function CornerDeco({ pos }: { pos: "top-left" | "top-right" | "bottom-left" | "bottom-right" }) {
-  const style: React.CSSProperties = {
-    position: "absolute",
-    width: "8px",
-    height: "8px",
-    border: "2px solid var(--cyan)",
+  const base = "absolute w-2 h-2 border-2 border-accent";
+  const variants: Record<typeof pos, string> = {
+    "top-left":     "-top-px -left-px border-r-0 border-b-0",
+    "top-right":    "-top-px -right-px border-l-0 border-b-0",
+    "bottom-left":  "-bottom-px -left-px border-r-0 border-t-0",
+    "bottom-right": "-bottom-px -right-px border-l-0 border-t-0",
   };
-  if (pos === "top-left") { style.top = "-2px"; style.left = "-2px"; style.borderRight = "none"; style.borderBottom = "none"; }
-  if (pos === "top-right") { style.top = "-2px"; style.right = "-2px"; style.borderLeft = "none"; style.borderBottom = "none"; }
-  if (pos === "bottom-left") { style.bottom = "-2px"; style.left = "-2px"; style.borderRight = "none"; style.borderTop = "none"; }
-  if (pos === "bottom-right") { style.bottom = "-2px"; style.right = "-2px"; style.borderLeft = "none"; style.borderTop = "none"; }
-  return <span style={style} />;
+  return <span className={`${base} ${variants[pos]}`} />;
 }

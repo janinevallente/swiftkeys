@@ -11,34 +11,25 @@ interface StatsBarProps {
 }
 
 export function StatsBar({ wpm, accuracy, timeLeft, isDark, status }: StatsBarProps) {
-  const isLow = timeLeft <= 10 && status === "running";
+  const isLow  = timeLeft <= 10 && status === "running";
   const isIdle = status === "idle";
 
   return (
     <div className="flex items-center justify-between gap-6 mb-6 select-none">
 
-      {/* Timer — big pixel display */}
+      {/* Timer panel */}
       <div className="flex items-end gap-2">
         <div
-          style={{
-            background: "var(--bg-surface)",
-            border: `2px solid ${isLow ? "var(--red)" : "var(--border-strong)"}`,
-            boxShadow: isLow
-              ? "3px 3px 0px rgba(255,60,60,0.4), 0 0 16px rgba(255,60,60,0.2)"
-              : "3px 3px 0px var(--border-strong)",
-            padding: "6px 14px",
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-          }}
+          className={`flex items-center gap-2 px-3.5 py-1.5 bg-bg-surface border-2 ${
+            isLow
+              ? "border-danger shadow-[3px_3px_0px_rgba(255,60,60,0.4)]"
+              : "border-border-strong shadow-pixel-border"
+          }`}
         >
           <span
-            style={{
-              fontFamily: "var(--font-pixel)",
-              fontSize: "0.45rem",
-              color: isLow ? "var(--red)" : "var(--text-muted)",
-              letterSpacing: "0.12em",
-            }}
+            className={`font-pixel text-6xs tracking-wider3 ${
+              isLow ? "text-danger" : "text-text-muted"
+            }`}
           >
             TIME
           </span>
@@ -47,16 +38,13 @@ export function StatsBar({ wpm, accuracy, timeLeft, isDark, status }: StatsBarPr
             initial={{ y: -3, opacity: 0.5 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.1 }}
+            className={`font-mono text-[2.6rem] font-bold leading-none tracking-pixel ${
+              isLow ? "text-danger" : isIdle ? "text-text-dim" : "text-accent"
+            }`}
             style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: "2.6rem",
-              fontWeight: "bold",
-              color: isLow ? "var(--red)" : isIdle ? "var(--text-dim)" : "var(--cyan)",
               textShadow: isLow
                 ? "0 0 14px rgba(255,60,60,0.6)"
                 : isIdle ? "none" : "0 0 14px var(--cyan-glow-strong)",
-              lineHeight: 1,
-              letterSpacing: "0.04em",
             }}
           >
             {timeLeft}
@@ -64,72 +52,51 @@ export function StatsBar({ wpm, accuracy, timeLeft, isDark, status }: StatsBarPr
         </div>
       </div>
 
-      {/* Stats — pixel readouts */}
+      {/* WPM + ACC panels */}
       <div className="flex items-center gap-3">
         <PixelStat
           label="WPM"
           value={isIdle ? "---" : String(wpm)}
           highlight={status === "running"}
-          color="var(--cyan)"
+          colorVar="var(--cyan)"
         />
-        <div style={{ width: "2px", height: "36px", background: "var(--border-subtle)" }} />
+        <div className="w-px h-9 bg-border-subtle" />
         <PixelStat
           label="ACC"
           value={isIdle ? "---" : `${accuracy}%`}
           highlight={false}
-          color="var(--amber)"
+          colorVar="var(--amber)"
         />
       </div>
     </div>
   );
 }
 
-function PixelStat({
-  label,
-  value,
-  highlight,
-  color,
-}: {
+function PixelStat({ label, value, highlight, colorVar }: {
   label: string;
   value: string;
   highlight: boolean;
-  color: string;
+  colorVar: string;
 }) {
   return (
     <div
+      className="bg-bg-surface border-2 border-border-strong text-right min-w-[80px] px-3 py-1"
       style={{
-        background: "var(--bg-surface)",
-        border: "2px solid var(--border-strong)",
         boxShadow: highlight
-          ? `3px 3px 0px ${color}44, 0 0 10px ${color}22`
+          ? `3px 3px 0px ${colorVar}44, 0 0 10px ${colorVar}22`
           : "3px 3px 0px var(--border-strong)",
-        padding: "5px 12px",
-        textAlign: "right",
-        minWidth: "80px",
       }}
     >
       <div
+        className="font-mono text-[1.55rem] font-bold leading-[1.1] tracking-pixel"
         style={{
-          fontFamily: "var(--font-mono)",
-          fontSize: "1.55rem",
-          fontWeight: "bold",
-          color: highlight ? color : "var(--text-secondary)",
-          textShadow: highlight ? `0 0 10px ${color}66` : "none",
-          lineHeight: 1.1,
-          letterSpacing: "0.04em",
+          color: highlight ? colorVar : "var(--text-secondary)",
+          textShadow: highlight ? `0 0 10px ${colorVar}66` : "none",
         }}
       >
         {value}
       </div>
-      <div
-        style={{
-          fontFamily: "var(--font-pixel)",
-          fontSize: "0.38rem",
-          color: "var(--text-muted)",
-          letterSpacing: "0.16em",
-          marginTop: "3px",
-        }}
-      >
+      <div className="font-pixel text-3xs text-text-muted tracking-wider6 mt-0.5">
         {label}
       </div>
     </div>
