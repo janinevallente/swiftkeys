@@ -28,7 +28,7 @@
   --text-primary: #f0f6fc;
   --text-secondary: #8fb86a;
   --text-muted: #4a6e33;
-  --text-dim: #2c4220;
+  --text-dim: #55674c;
 }
 
 /* ── LIGHT MODE ── */
@@ -51,7 +51,7 @@ body.light {
   --text-primary: #111111;
   --text-secondary: #444444;
   --text-muted: #888888;
-  --text-dim: #bbbbbb;
+  --text-dim: #9e9b9b;
 }
 
 * {

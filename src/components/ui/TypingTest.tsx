@@ -161,7 +161,7 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
             </div>
 
             {/* Hint */}
-            <div className="mt-6 text-center select-none font-pixel text-5xs text-text-dim tracking-wider4">
+            <div className="mt-6 text-center select-none font-pixel text-5xs text-text-muted tracking-wider4">
               {status === "idle" ? "▶ START TYPING  ·  TAB TO RESTART" : "TAB TO RESTART"}
             </div>
           </motion.div>

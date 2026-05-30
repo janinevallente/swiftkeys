@@ -39,7 +39,7 @@ export function StatsBar({ wpm, accuracy, timeLeft, isDark, status }: StatsBarPr
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.1 }}
             className={`font-mono text-[2.6rem] font-bold leading-none tracking-pixel ${
-              isLow ? "text-danger" : isIdle ? "text-text-dim" : "text-accent"
+              isLow ? "text-danger" : isIdle ? "text-text-muted" : "text-accent"
             }`}
             style={{
               textShadow: isLow

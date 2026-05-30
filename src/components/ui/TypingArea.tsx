@@ -32,7 +32,7 @@ export function TypingArea({ chars, cursor, isDark }: TypingAreaProps) {
   }, [cursor]);
 
   return (
-    <div className="relative bg-bg-surface border-2 border-border-strong shadow-typing-box p-5 pb-6">
+    <div className="relative bg-bg-surface border-2 border-border-strong shadow-typing-box px-7 py-10">
 
       {/* Corner brackets */}
       <CornerDeco pos="top-left" />
@@ -48,7 +48,7 @@ export function TypingArea({ chars, cursor, isDark }: TypingAreaProps) {
 
         {/* Characters */}
         <div
-          className="font-mono select-none pb-5 text-text-muted break-words whitespace-pre-wrap tracking-pixel"
+          className="font-mono select-none pb-5 text-text-dim break-words whitespace-pre-wrap tracking-pixel"
           style={{ fontSize: "1.6rem", lineHeight: "3rem" }}
         >
           {chars.map((c, i) => {
@@ -69,7 +69,7 @@ export function TypingArea({ chars, cursor, isDark }: TypingAreaProps) {
                     color:
                       c.state === "correct"   ? "var(--cyan)"
                       : c.state === "incorrect" ? "var(--red)"
-                      : "var(--text-muted)",
+                      : "var(--text-dim)",
                     textShadow:
                       c.state === "correct"   ? "0 0 8px var(--cyan-glow-strong)"
                       : c.state === "incorrect" ? "0 0 8px rgba(255,60,60,0.5)"
