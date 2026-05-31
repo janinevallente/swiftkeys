@@ -26,7 +26,7 @@ export default function ClearModal({ onConfirm, onCancel }: { onConfirm: () => v
           onClick={(e) => e.stopPropagation()}
           className="relative w-full max-w-xs sm:max-w-sm bg-bg-base border-2 border-accent p-5 sm:p-7"
           style={{
-            boxShadow: "6px 6px 0px var(--cyan-dim), 0 0 24px rgba(93,140,62,0.2)",
+            boxShadow: "6px 6px 0px var(--default-dim), 0 0 24px rgba(93,140,62,0.2)",
             imageRendering: "pixelated",
           }}
         >

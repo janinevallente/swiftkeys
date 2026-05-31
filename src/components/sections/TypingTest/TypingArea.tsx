@@ -86,11 +86,11 @@ export function TypingArea({ chars, cursor, isDark }: TypingAreaProps) {
                     <span
                       style={{
                         color:
-                          c.state === "correct"    ? "var(--cyan)"
+                          c.state === "correct"    ? "var(--default)"
                           : c.state === "incorrect" ? "var(--red)"
                           : "var(--text-dim)",
                         textShadow:
-                          c.state === "correct"    ? "0 0 8px var(--cyan-glow-strong)"
+                          c.state === "correct"    ? "0 0 8px var(--default-glow-strong)"
                           : c.state === "incorrect" ? "0 0 8px rgba(255,60,60,0.5)"
                           : "none",
                         textDecoration: c.state === "incorrect" ? "underline var(--red)" : "none",

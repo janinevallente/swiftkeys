@@ -46,10 +46,10 @@ export default function WpmChart({ history }: { history: ScoreEntry[] }) {
             maxBarSize={28}
             shape={(props: any) => {
               const { x, y, width, height, payload } = props;
-              const fill = payload?.isBest ? "var(--amber)" : "var(--cyan)";
+              const fill = payload?.isBest ? "var(--amber)" : "var(--default)";
               return (
                 <g>
-                  <rect x={x + 2} y={y + 2} width={width} height={height} fill="var(--cyan-dim)" opacity="0.3" />
+                  <rect x={x + 2} y={y + 2} width={width} height={height} fill="var(--default-dim)" opacity="0.3" />
                   <rect x={x} y={y} width={width} height={height} fill={fill} />
                 </g>
               );

@@ -96,7 +96,7 @@ export function ScoreHistory({ history, onClear }: ScoreHistoryProps) {
                     <tr
                       key={entry.id}
                       className="border-b border-border-subtle last:border-b-0"
-                      style={{ background: isBest ? "var(--cyan-glow)" : undefined }}
+                      style={{ background: isBest ? "var(--default-glow)" : undefined }}
                     >
                       {/* DATE */}
                       <td className="font-mono text-xs sm:text-sm text-text-dim px-3 py-2 whitespace-nowrap">
@@ -105,7 +105,7 @@ export function ScoreHistory({ history, onClear }: ScoreHistoryProps) {
                       {/* WPM */}
                       <td
                         className="font-mono text-sm sm:text-base font-bold px-3 py-2"
-                        style={{ color: isBest ? "var(--amber)" : "var(--cyan)" }}
+                        style={{ color: isBest ? "var(--amber)" : "var(--default)" }}
                       >
                         {entry.wpm}
                         {isBest && <span className="font-pixel text-[0.4rem] text-amber ml-1">★</span>}

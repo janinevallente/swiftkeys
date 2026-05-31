@@ -32,8 +32,8 @@ const config: Config = {
         "bg-elevated": "var(--bg-elevated)",
         "border-subtle": "var(--border-subtle)",
         "border-strong": "var(--border-strong)",
-        accent: "var(--cyan)",
-        "accent-dim": "var(--cyan-dim)",
+        accent: "var(--default)",
+        "accent-dim": "var(--default-dim)",
         amber: "var(--amber)",
         danger: "var(--red)",
         "text-base": "var(--text-primary)",
@@ -60,17 +60,18 @@ const config: Config = {
         wider8: "0.20em",
       },
       boxShadow: {
-        "pixel-accent": "2px 2px 0px var(--cyan-dim)",
+        "pixel-accent": "2px 2px 0px var(--default-dim)",
         "pixel-base": "2px 2px 0px var(--bg-base)",
         "pixel-border": "3px 3px 0px var(--border-strong)",
         "pixel-strong": "4px 4px 0px var(--border-strong)",
-        "pixel-hero": "6px 6px 0px var(--cyan-dim)",
-        "glow-accent": "0 0 14px var(--cyan-glow-strong)",
-        "glow-accent-sm": "0 0 10px var(--cyan-glow)",
+        "pixel-hero": "6px 6px 0px var(--default-dim)",
+        "glow-accent": "0 0 14px var(--default-glow-strong)",
+        "glow-accent-sm": "0 0 10px var(--default-glow)",
         "glow-danger": "0 0 16px rgba(255,60,60,0.2)",
         "typing-box":
-          "4px 4px 0px var(--border-strong), 0 0 20px var(--cyan-glow)",
-        "hero-box": "6px 6px 0px var(--cyan-dim), 0 0 28px var(--cyan-glow)",
+          "4px 4px 0px var(--border-strong), 0 0 20px var(--default-glow)",
+        "hero-box":
+          "6px 6px 0px var(--default-dim), 0 0 28px var(--default-glow)",
       },
       backgroundImage: {
         "fade-surface":

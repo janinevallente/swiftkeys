@@ -17,10 +17,10 @@
   --border-subtle: #2a3a2a;
   --border-strong: #3d5c2e;
 
-  --cyan: #5d8c3e;
-  --cyan-dim: #3f6128;
-  --cyan-glow: rgba(93, 140, 62, 0.15);
-  --cyan-glow-strong: rgba(93, 140, 62, 0.35);
+  --default: #5d8c3e;
+  --default-dim: #3f6128;
+  --default-glow: rgba(93, 140, 62, 0.15);
+  --default-glow-strong: rgba(93, 140, 62, 0.35);
 
   --red: #f85149;
   --amber: #8fb86a;
@@ -40,10 +40,10 @@ body.light {
   --border-subtle: #c0c0c0;
   --border-strong: #888888;
 
-  --cyan: #222222;
-  --cyan-dim: #444444;
-  --cyan-glow: rgba(0, 0, 0, 0.1);
-  --cyan-glow-strong: rgba(0, 0, 0, 0.22);
+  --default: #222222;
+  --default-dim: #444444;
+  --default-glow: rgba(0, 0, 0, 0.1);
+  --default-glow-strong: rgba(0, 0, 0, 0.22);
 
   --red: #cc2222;
   --amber: #555555;

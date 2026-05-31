@@ -40,7 +40,7 @@ export function StatsBar({ wpm, accuracy, timeLeft, isDark, status }: StatsBarPr
           style={{
             textShadow: isLow
               ? "0 0 14px rgba(255,60,60,0.6)"
-              : isIdle ? "none" : "0 0 14px var(--cyan-glow-strong)",
+              : isIdle ? "none" : "0 0 14px var(--default-glow-strong)",
           }}
         >
           {timeLeft}
@@ -53,7 +53,7 @@ export function StatsBar({ wpm, accuracy, timeLeft, isDark, status }: StatsBarPr
           label="WPM"
           value={isIdle ? "---" : String(wpm)}
           highlight={status === "running"}
-          colorVar="var(--cyan)"
+          colorVar="var(--default)"
         />
         <div className="w-px h-7 sm:h-9 bg-border-subtle" />
         <PixelStat
