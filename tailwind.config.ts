@@ -72,7 +72,7 @@ const config: Config = {
         content: "920px",
       },
       maxHeight: {
-        typing: "172px",
+        typing: "260px",
       },
       transitionTimingFunction: {
         "expo-out": "cubic-bezier(0.16, 1, 0.3, 1)",

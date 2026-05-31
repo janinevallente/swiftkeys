@@ -56,7 +56,7 @@ export default function Home() {
       </motion.nav>
 
       {/* Main */}
-      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 pb-6 overflow-hidden">
+      <main className="relative z-10 flex-1 flex flex-col items-center px-6 py-16 overflow-hidden">
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
