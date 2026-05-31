@@ -4,6 +4,7 @@ import { useEffect, useRef, useCallback, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTypingTest } from "@/hooks/useTypingTest";
 import { useSoundEffects } from "@/hooks/useSoundEffects";
+import { useScoreHistory } from "@/hooks/useScoreHistory";
 import { TypingArea } from "./TypingArea";
 import { StatsBar } from "./StatsBar";
 import { Results } from "./Results";
@@ -23,8 +24,10 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
 
   const inputRef           = useRef<HTMLInputElement>(null);
   const isPhysicalKeyboard = useRef(false);
+  const savedRef           = useRef(false); // prevent double-save
 
   const { playTick, playFinish } = useSoundEffects(soundEnabled);
+  const { history, addEntry, clearHistory } = useScoreHistory();
 
   const {
     chars, cursor, status, timeLeft,
@@ -34,9 +37,20 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
 
   const prevStatus = useRef(status);
   useEffect(() => {
-    if (prevStatus.current !== "finished" && status === "finished") playFinish();
+    if (prevStatus.current !== "finished" && status === "finished") {
+      playFinish();
+      savedRef.current = false; // reset flag on new finish
+    }
     prevStatus.current = status;
   }, [status, playFinish]);
+
+  // Save to history once when result becomes available
+  useEffect(() => {
+    if (result && status === "finished" && !savedRef.current) {
+      savedRef.current = true;
+      addEntry(result);
+    }
+  }, [result, status, addEntry]);
 
   const handleKeyPressRef   = useRef(handleKeyPress);
   handleKeyPressRef.current  = handleKeyPress;
@@ -110,8 +124,16 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="overflow-y-auto pr-1"
+            style={{ maxHeight: "calc(100vh - 140px)" }}
           >
-            <Results result={result} isDark={isDark} onRestart={handleRestart} />
+            <Results
+              result={result}
+              isDark={isDark}
+              onRestart={handleRestart}
+              history={history}
+              onClearHistory={clearHistory}
+            />
           </motion.div>
         ) : (
           <motion.div

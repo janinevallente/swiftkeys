@@ -2,14 +2,18 @@
 
 import { motion } from "framer-motion";
 import type { TestResult } from "@/hooks/useTypingTest";
+import { ScoreHistory } from "./ScoreHistory";
+import type { ScoreEntry } from "@/hooks/useScoreHistory";
 
 interface ResultsProps {
   result: TestResult;
   isDark: boolean;
   onRestart: () => void;
+  history: ScoreEntry[];
+  onClearHistory: () => void;
 }
 
-export function Results({ result, isDark, onRestart }: ResultsProps) {
+export function Results({ result, isDark, onRestart, history, onClearHistory }: ResultsProps) {
   const secondaryStats = [
     { label: "ACC",     value: `${result.accuracy}%`,            colorVar: "var(--amber)" },
     { label: "CORRECT", value: String(result.correct),            colorVar: "var(--cyan)"  },
@@ -59,7 +63,6 @@ export function Results({ result, isDark, onRestart }: ResultsProps) {
             className="font-mono font-bold leading-none tracking-pixel text-accent"
             style={{
               fontSize: "clamp(3rem, 18vw, 6.5rem)",
-              textShadow: "0 0 24px var(--cyan-glow-strong), 0 0 48px var(--cyan-glow)",
             }}
           >
             {result.wpm}
@@ -70,7 +73,7 @@ export function Results({ result, isDark, onRestart }: ResultsProps) {
         </motion.div>
       </div>
 
-      {/* Secondary stats grid — 2 cols on mobile, 4 on sm+ */}
+      {/* Secondary stats grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 mb-4 sm:mb-6 bg-bg-surface border-2 border-border-strong shadow-pixel-strong">
         {secondaryStats.map((s, i) => (
           <motion.div
@@ -102,7 +105,7 @@ export function Results({ result, isDark, onRestart }: ResultsProps) {
       </div>
 
       {/* Restart button */}
-      <div className="flex justify-center">
+      <div className="flex justify-center mb-2">
         <motion.button
           whileTap={{ scale: 0.94 }}
           onClick={onRestart}
@@ -114,6 +117,9 @@ export function Results({ result, isDark, onRestart }: ResultsProps) {
           PLAY AGAIN
         </motion.button>
       </div>
+
+      {/* Score history */}
+      <ScoreHistory history={history} onClear={onClearHistory} />
     </motion.div>
   );
 }
