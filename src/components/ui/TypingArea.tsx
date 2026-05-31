@@ -10,12 +10,10 @@ interface TypingAreaProps {
   isDark: boolean;
 }
 
-// Group flat char array into words (each word includes its trailing space char)
 function groupIntoWords(chars: CharData[]): { chars: CharData[]; startIndex: number }[] {
   const words: { chars: CharData[]; startIndex: number }[] = [];
   let current: CharData[] = [];
   let startIndex = 0;
-
   chars.forEach((c, i) => {
     current.push(c);
     if (c.char === " " || i === chars.length - 1) {
@@ -24,7 +22,6 @@ function groupIntoWords(chars: CharData[]): { chars: CharData[]; startIndex: num
       current = [];
     }
   });
-
   return words;
 }
 
@@ -52,24 +49,22 @@ export function TypingArea({ chars, cursor, isDark }: TypingAreaProps) {
   const words = groupIntoWords(chars);
 
   return (
-    <div className="relative bg-bg-surface border-2 border-border-strong shadow-typing-box px-7 pt-8 pb-10">
-
-      {/* Corner brackets */}
+    <div className="relative bg-bg-surface border-2 border-border-strong shadow-typing-box px-3 sm:px-5 md:px-7 pt-5 sm:pt-8 pb-6 sm:pb-10">
       <CornerDeco pos="top-left" />
       <CornerDeco pos="top-right" />
       <CornerDeco pos="bottom-left" />
       <CornerDeco pos="bottom-right" />
 
-      {/* Scrollable text container */}
       <div ref={containerRef} className="relative w-full overflow-hidden max-h-typing">
-
-        {/* Bottom fade */}
         <div className="absolute bottom-0 left-0 right-0 h-10 pointer-events-none z-10 bg-fade-surface" />
 
-        {/* Words — each word is inline-block so it never breaks mid-word */}
+        {/* Responsive font size: smaller on mobile, larger on desktop */}
         <div
           className="font-mono select-none pb-5 tracking-pixel"
-          style={{ fontSize: "1.6rem", lineHeight: "3rem" }}
+          style={{
+            fontSize: "clamp(1rem, 4vw, 1.6rem)",
+            lineHeight: "clamp(2rem, 6vw, 3rem)",
+          }}
         >
           {words.map((word, wi) => (
             <span key={wi} className="inline-block">
@@ -81,7 +76,7 @@ export function TypingArea({ chars, cursor, isDark }: TypingAreaProps) {
                     {isActive && (
                       <motion.span
                         ref={cursorRef}
-                        className="absolute left-0 top-1 bottom-1 w-[3px] bg-amber"
+                        className="absolute left-0 top-1 bottom-1 w-[2px] sm:w-[3px] bg-amber"
                         style={{ boxShadow: "0 0 8px var(--amber), 0 0 16px rgba(143,184,106,0.4)" }}
                         animate={{ opacity: [1, 1, 0, 0] }}
                         transition={{ duration: 0.9, repeat: Infinity, ease: "linear", times: [0, 0.45, 0.45, 1] }}
@@ -90,11 +85,11 @@ export function TypingArea({ chars, cursor, isDark }: TypingAreaProps) {
                     <span
                       style={{
                         color:
-                          c.state === "correct"   ? "var(--cyan)"
+                          c.state === "correct"    ? "var(--cyan)"
                           : c.state === "incorrect" ? "var(--red)"
                           : "var(--text-dim)",
                         textShadow:
-                          c.state === "correct"   ? "0 0 8px var(--cyan-glow-strong)"
+                          c.state === "correct"    ? "0 0 8px var(--cyan-glow-strong)"
                           : c.state === "incorrect" ? "0 0 8px rgba(255,60,60,0.5)"
                           : "none",
                         textDecoration: c.state === "incorrect" ? "underline var(--red)" : "none",

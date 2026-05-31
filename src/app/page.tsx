@@ -38,13 +38,15 @@ export default function Home() {
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="relative z-20 flex items-center justify-between px-10 py-4 shrink-0 border-b-2 border-border-subtle"
+        className="relative z-20 flex items-center justify-between px-4 sm:px-6 md:px-10 py-3 sm:py-4 shrink-0 border-b-2 border-border-subtle"
       >
         {/* Logo */}
-        <div className="flex items-center gap-4 select-none">
-          <PixelLogo />
+        <div className="flex items-center gap-2 sm:gap-4 select-none">
+          <span className="hidden xs:block">
+            <PixelLogo />
+          </span>
           <div
-            className="font-pixel text-sm tracking-pixel text-accent"
+            className="font-pixel text-[0.5rem] sm:text-xs md:text-sm tracking-pixel text-accent"
             style={{ textShadow: "0 0 10px var(--cyan-glow-strong)" }}
           >
             SWIFT<span className="text-amber">KEYS</span>
@@ -56,7 +58,7 @@ export default function Home() {
       </motion.nav>
 
       {/* Main */}
-      <main className="relative z-10 flex-1 flex flex-col items-center px-6 py-16 overflow-hidden">
+      <main className="relative z-10 flex-1 flex flex-col items-center px-3 sm:px-6 py-6 sm:py-10 md:py-16 overflow-hidden">
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
@@ -68,7 +70,7 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 flex items-center justify-between px-10 py-5 shrink-0 select-none font-pixel text-6xs text-text-muted tracking-wider2">
+      <footer className="relative z-10 flex items-center justify-between px-4 sm:px-6 md:px-10 py-3 sm:py-5 shrink-0 select-none font-pixel text-[0.3rem] sm:text-6xs text-text-muted tracking-wider2">
         <span>© 2026 SWIFTKEYS</span>
         <span>v1.0.0</span>
       </footer>
@@ -116,7 +118,7 @@ function PixelToggle({ isDark, onClick }: { isDark: boolean; onClick: () => void
     <button
       onClick={onClick}
       title={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      className="cursor-pointer bg-transparent border-none p-0 select-none"
+      className="cursor-pointer bg-transparent border-none p-0 select-none shrink-0"
       style={{ imageRendering: "pixelated" }}
     >
       <svg

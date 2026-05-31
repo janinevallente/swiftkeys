@@ -21,7 +21,7 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [focused,      setFocused]      = useState(true);
 
-  const inputRef          = useRef<HTMLInputElement>(null);
+  const inputRef           = useRef<HTMLInputElement>(null);
   const isPhysicalKeyboard = useRef(false);
 
   const { playTick, playFinish } = useSoundEffects(soundEnabled);
@@ -38,14 +38,12 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
     prevStatus.current = status;
   }, [status, playFinish]);
 
-  const handleKeyPressRef  = useRef(handleKeyPress);
-  handleKeyPressRef.current = handleKeyPress;
-
-  const getExpectedCharRef  = useRef(getExpectedChar);
+  const handleKeyPressRef   = useRef(handleKeyPress);
+  handleKeyPressRef.current  = handleKeyPress;
+  const getExpectedCharRef   = useRef(getExpectedChar);
   getExpectedCharRef.current = getExpectedChar;
-
-  const playTickRef  = useRef(playTick);
-  playTickRef.current = playTick;
+  const playTickRef          = useRef(playTick);
+  playTickRef.current        = playTick;
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -90,7 +88,7 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
     <div className="w-full flex flex-col">
 
       {/* Control bar */}
-      <div className="mb-6 flex items-center justify-between gap-4">
+      <div className="mb-4 sm:mb-6">
         <ControlBar
           duration={duration}
           difficulty={difficulty}
@@ -106,7 +104,6 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
 
       <AnimatePresence mode="wait">
         {status === "finished" && result ? (
-
           <motion.div
             key="results"
             initial={{ opacity: 0, y: 10 }}
@@ -116,9 +113,7 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
           >
             <Results result={result} isDark={isDark} onRestart={handleRestart} />
           </motion.div>
-
         ) : (
-
           <motion.div
             key="test"
             initial={{ opacity: 0 }}
@@ -150,18 +145,16 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
                 autoComplete="off"
                 spellCheck={false}
               />
-
               {!focused && (
-                <div className="absolute inset-0 flex items-center justify-center z-10 backdrop-blur-sm font-pixel text-7xs text-text-sub tracking-wider5">
+                <div className="absolute inset-0 flex items-center justify-center z-10 backdrop-blur-sm font-pixel text-[0.35rem] sm:text-7xs text-text-sub tracking-wider5">
                   ▶ CLICK TO FOCUS
                 </div>
               )}
-
               <TypingArea chars={chars} cursor={cursor} isDark={isDark} />
             </div>
 
             {/* Hint */}
-            <div className="mt-6 text-center select-none font-pixel text-5xs text-text-muted tracking-wider4">
+            <div className="mt-4 sm:mt-6 text-center select-none font-pixel text-[0.3rem] sm:text-5xs text-text-muted tracking-wider4">
               {status === "idle" ? "▶ START TYPING  ·  TAB TO RESTART" : "TAB TO RESTART"}
             </div>
           </motion.div>

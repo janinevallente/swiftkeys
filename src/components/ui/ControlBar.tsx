@@ -33,10 +33,10 @@ export function ControlBar({
   const disabled = status === "running";
 
   return (
-    <div className="flex items-center justify-between w-full flex-wrap gap-y-3">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-3">
 
-      {/* Left: duration + difficulty groups */}
-      <div className="flex items-center gap-3 flex-wrap">
+      {/* Left: duration + difficulty — stack on mobile, row on sm+ */}
+      <div className="flex flex-col xs:flex-row items-start xs:items-center gap-2 xs:gap-3 flex-wrap">
 
         {/* Duration */}
         <div className="flex items-center gap-1">
@@ -54,8 +54,8 @@ export function ControlBar({
           ))}
         </div>
 
-        {/* Divider */}
-        <div className="w-px h-5 bg-border-strong" />
+        {/* Divider — hidden on mobile */}
+        <div className="hidden xs:block w-px h-5 bg-border-strong" />
 
         {/* Difficulty */}
         <div className="flex items-center gap-1">
@@ -68,14 +68,16 @@ export function ControlBar({
               onClick={() => { if (!disabled) onDifficulty(d); }}
               amber={true}
             >
-              {d.toUpperCase()}
+              {/* Shorten labels on mobile */}
+              <span className="xs:hidden">{d === "easy" ? "E" : d === "medium" ? "M" : "H"}</span>
+              <span className="hidden xs:inline">{d.toUpperCase()}</span>
             </PixelBtn>
           ))}
         </div>
       </div>
 
       {/* Right: icon buttons */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 self-end sm:self-auto">
         <PixelIconBtn onClick={onToggleSound} title={soundEnabled ? "Mute" : "Unmute"}>
           {soundEnabled ? <Volume2 size={13} strokeWidth={2} /> : <VolumeX size={13} strokeWidth={2} />}
         </PixelIconBtn>
@@ -100,27 +102,21 @@ function PixelBtn({
   onClick: () => void;
   amber: boolean;
 }) {
-  // Dynamic classes based on active/disabled/amber state
   const base = "font-pixel text-6xs tracking-pixel border-2 cursor-pointer transition-none";
-
   const activeClass = amber
     ? "bg-amber text-bg-base border-amber shadow-pixel-accent"
     : "bg-accent text-bg-base border-accent shadow-pixel-accent";
-
   const idleClass = amber
     ? "bg-bg-surface text-amber border-border-strong shadow-pixel-base hover:border-amber"
     : "bg-bg-surface text-accent border-border-strong shadow-pixel-base hover:border-accent";
-
   const disabledClass = "bg-bg-surface text-text-dim border-border-subtle shadow-pixel-base opacity-35 cursor-not-allowed";
 
-  const className = [
-    base,
-    "px-2 py-1",
-    active ? activeClass : disabled ? disabledClass : idleClass,
-  ].join(" ");
-
   return (
-    <button onClick={onClick} disabled={disabled} className={className}>
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={[base, "px-2 py-1", active ? activeClass : disabled ? disabledClass : idleClass].join(" ")}
+    >
       {children}
     </button>
   );
