@@ -32,7 +32,7 @@ export default function Home() {
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen flex flex-col bg-bg-base">
+    <div className="h-screen flex flex-col bg-bg-base overflow-hidden">
       {/* Navbar */}
       <motion.nav
         initial={{ opacity: 0, y: -8 }}
@@ -58,7 +58,7 @@ export default function Home() {
       </motion.nav>
 
       {/* Main */}
-      <main className="relative z-10 flex-1 flex flex-col items-center px-3 sm:px-6 py-6 sm:py-10 md:py-16 overflow-hidden">
+      <main className="relative z-10 flex-1 flex flex-col items-center px-3 sm:px-6 py-6 sm:py-10 md:py-16 overflow-y-auto scrollbar-hide">
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
