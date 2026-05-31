@@ -12,7 +12,7 @@ interface ScoreHistoryProps {
 
 function formatTime(ts: number): string {
   const d = new Date(ts);
-  return d.toLocaleDateString(undefined, { month: "short", day: "numeric" })
+  return d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })
     + " " + d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
 }
 
@@ -174,8 +174,8 @@ export function ScoreHistory({ history, onClear }: ScoreHistoryProps) {
       </div>
 
       {/* Chart wrapper container */}
-      <div className="bg-bg-surface border-2 border-border-strong shadow-pixel-border p-3 sm:p-4 mb-3 sm:mb-4">
-        <div className="font-pixel text-[0.28rem] sm:text-3xs text-text-muted tracking-wider5 mb-1 text-center">
+      <div className="p-3 sm:p-4 mb-3 sm:mb-4">
+        <div className="font-pixel text-[0.3rem] sm:text-4xs text-text-muted tracking-wider5 mb-1 text-center">
           WPM — LAST {Math.min(history.length, 10)} RUNS
         </div>
         <WpmChart history={history} />
@@ -183,17 +183,17 @@ export function ScoreHistory({ history, onClear }: ScoreHistoryProps) {
 
       {/* Table */}
       <div className="bg-bg-surface border-2 border-border-strong shadow-pixel-border overflow-hidden">
-        <div className="font-pixel text-[0.28rem] sm:text-3xs text-text-muted tracking-wider5 p-3 border-b-2 border-border-strong">
+        <div className="font-pixel text-[0.3rem] sm:text-4xs text-text-muted tracking-wider5 p-3 border-b-2 border-border-strong">
           FULL LOG — {history.length} ENTRIES
         </div>
         <div className="overflow-x-auto max-h-[200px] overflow-y-auto">
           <table className="w-full min-w-[400px]">
             <thead>
               <tr className="border-b border-border-strong">
-                {["#", "WPM", "ACC", "CORRECT", "ERRORS", "TIME", "DATE"].map((h) => (
+                {["DATE", "WPM", "ACC", "CORRECT", "ERRORS", "TIME"].map((h) => (
                   <th
                     key={h}
-                    className="font-pixel text-[0.26rem] sm:text-2xs text-text-muted tracking-wider3 px-2 sm:px-3 py-1.5 text-left whitespace-nowrap"
+                    className="font-pixel text-[0.3rem] sm:text-4xs text-text-muted tracking-wider5 px-2 sm:px-3 py-1.5 text-left whitespace-nowrap"
                   >
                     {h}
                   </th>
@@ -209,35 +209,32 @@ export function ScoreHistory({ history, onClear }: ScoreHistoryProps) {
                     className="border-b border-border-subtle last:border-b-0"
                     style={{ background: isBest ? "var(--cyan-glow)" : undefined }}
                   >
-                    <td className="font-pixel text-[0.26rem] sm:text-3xs text-text-muted px-2 sm:px-3 py-1.5">
-                      {i + 1}
+                    <td className="font-pixel text-6xs sm:text-2xs text-text-dim px-2 sm:px-3 py-1.5 whitespace-nowrap">
+                      {formatTime(entry.timestamp)}
                     </td>
                     <td
-                      className="font-mono text-xs sm:text-sm font-bold px-2 sm:px-3 py-1.5"
+                      className="font-mono text-md sm:text-sm font-bold px-2 sm:px-3 py-1.5"
                       style={{ color: isBest ? "var(--amber)" : "var(--cyan)" }}
                     >
                       {entry.wpm}
                       {isBest && (
-                        <span className="font-pixel text-[0.2rem] text-amber ml-1">★</span>
+                        <span className="font-pixel text-[0.3rem] sm:text-4xs text-amber ml-1">★</span>
                       )}
                     </td>
-                    <td className="font-mono text-xs sm:text-sm text-text-sub px-2 sm:px-3 py-1.5">
+                    <td className="font-mono text-6xs sm:text-sm text-text-sub px-2 sm:px-3 py-1.5">
                       {entry.accuracy}%
                     </td>
-                    <td className="font-mono text-xs sm:text-sm text-accent px-2 sm:px-3 py-1.5">
+                    <td className="font-mono text-6xs sm:text-sm text-accent px-2 sm:px-3 py-1.5">
                       {entry.correct}
                     </td>
                     <td
-                      className="font-mono text-xs sm:text-sm px-2 sm:px-3 py-1.5"
+                      className="font-mono text-6xs sm:text-sm px-2 sm:px-3 py-1.5"
                       style={{ color: entry.incorrect > 0 ? "var(--red)" : "var(--text-muted)" }}
                     >
                       {entry.incorrect}
                     </td>
-                    <td className="font-mono text-xs sm:text-sm text-text-muted px-2 sm:px-3 py-1.5 whitespace-nowrap">
+                    <td className="font-mono text-6xs sm:text-sm text-text-muted px-2 sm:px-3 py-1.5 whitespace-nowrap">
                       {entry.duration}s
-                    </td>
-                    <td className="font-pixel text-[0.24rem] sm:text-2xs text-text-dim px-2 sm:px-3 py-1.5 whitespace-nowrap">
-                      {formatTime(entry.timestamp)}
                     </td>
                   </tr>
                 );
