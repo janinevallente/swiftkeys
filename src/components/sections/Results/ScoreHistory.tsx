@@ -1,0 +1,138 @@
+"use client";
+
+import { useState } from "react";
+import { motion } from "framer-motion";
+import WpmChart from "@/components/ui/WpmChart";
+import ClearModal from "@/components/ui/ClearModal";
+import type { ScoreEntry } from "@/hooks/useScoreHistory";
+
+interface ScoreHistoryProps {
+  history: ScoreEntry[];
+  onClear: () => void;
+}
+
+function formatTime(ts: number): string {
+  const d = new Date(ts);
+  return d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })
+    + " " + d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+}
+
+export function ScoreHistory({ history, onClear }: ScoreHistoryProps) {
+  const [showModal, setShowModal] = useState(false);
+
+  if (history.length === 0) return null;
+
+  const bestWpm = Math.max(...history.map((e) => e.wpm));
+
+  return (
+    <>
+      {/* Clear confirm modal — rendered in a portal-like position via fixed */}
+      {showModal && (
+        <ClearModal
+          onConfirm={() => { onClear(); setShowModal(false); }}
+          onCancel={() => setShowModal(false)}
+        />
+      )}
+
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.35, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full mt-6 sm:mt-8"
+      >
+        {/* Section header */}
+        <div className="flex items-center justify-between mb-3 sm:mb-4">
+          <div className="flex items-center gap-2">
+            <svg width="14" height="14" viewBox="0 0 12 12" style={{ imageRendering: "pixelated" }}>
+              <rect x="3" y="0" width="6" height="1" fill="var(--amber)" />
+              <rect x="2" y="1" width="8" height="5" fill="var(--amber)" />
+              <rect x="1" y="2" width="2" height="3" fill="var(--amber)" />
+              <rect x="9" y="2" width="2" height="3" fill="var(--amber)" />
+              <rect x="4" y="6" width="4" height="1" fill="var(--amber)" />
+              <rect x="5" y="7" width="2" height="2" fill="var(--amber)" />
+              <rect x="3" y="9" width="6" height="2" fill="var(--amber)" />
+            </svg>
+            <span className="font-pixel text-[0.55rem] sm:text-[0.65rem] text-amber tracking-wider5">
+              SCORE HISTORY
+            </span>
+          </div>
+
+          <button
+            onClick={() => setShowModal(true)}
+            className="font-pixel text-[0.45rem] sm:text-[0.5rem] text-text-muted border border-border-strong px-2 py-1 bg-bg-surface hover:text-danger hover:border-danger transition-colors duration-150 cursor-pointer"
+          >
+            CLEAR
+          </button>
+        </div>
+
+        {/* Chart */}
+        <div className="mb-3 sm:mb-4">
+          <div className="font-pixel text-[0.45rem] sm:text-[0.5rem] text-text-muted tracking-wider5 mb-1 text-center">
+            WPM — LAST {Math.min(history.length, 10)} RUNS
+          </div>
+          <WpmChart history={history} />
+        </div>
+
+        {/* Table */}
+        <div className="bg-bg-surface border-2 border-border-strong shadow-pixel-border overflow-hidden mt-5">
+          <div className="overflow-x-auto max-h-[220px] overflow-y-auto">
+            <table className="w-full min-w-[420px]">
+              <thead className="sticky top-0 bg-bg-surface z-10">
+                <tr className="border-b border-border-strong">
+                  {["DATE", "WPM", "ACC", "CORRECT", "ERRORS", "TIME"].map((h) => (
+                    <th
+                      key={h}
+                      className="font-pixel text-[0.4rem] sm:text-[0.45rem] text-text-muted tracking-wider3 px-3 py-2 text-left whitespace-nowrap"
+                    >
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {history.map((entry) => {
+                  const isBest = entry.wpm === bestWpm;
+                  return (
+                    <tr
+                      key={entry.id}
+                      className="border-b border-border-subtle last:border-b-0"
+                      style={{ background: isBest ? "var(--cyan-glow)" : undefined }}
+                    >
+                      {/* DATE */}
+                      <td className="font-mono text-xs sm:text-sm text-text-dim px-3 py-2 whitespace-nowrap">
+                        {formatTime(entry.timestamp)}
+                      </td>
+                      {/* WPM */}
+                      <td
+                        className="font-mono text-sm sm:text-base font-bold px-3 py-2"
+                        style={{ color: isBest ? "var(--amber)" : "var(--cyan)" }}
+                      >
+                        {entry.wpm}
+                        {isBest && <span className="font-pixel text-[0.4rem] text-amber ml-1">★</span>}
+                      </td>
+                      {/* ACC */}
+                      <td className="font-mono text-xs sm:text-sm text-text-sub px-3 py-2">{entry.accuracy}%</td>
+                      {/* CORRECT */}
+                      <td className="font-mono text-xs sm:text-sm text-accent px-3 py-2">{entry.correct}</td>
+                      {/* ERRORS */}
+                      <td
+                        className="font-mono text-xs sm:text-sm px-3 py-2"
+                        style={{ color: entry.incorrect > 0 ? "var(--red)" : "var(--text-muted)" }}
+                      >
+                        {entry.incorrect}
+                      </td>
+                      {/* TIME */}
+                      <td className="font-mono text-xs sm:text-sm text-text-muted px-3 py-2 whitespace-nowrap">
+                        {entry.duration}s
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </motion.div>
+    </>
+  );
+}
