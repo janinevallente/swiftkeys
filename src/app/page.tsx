@@ -9,7 +9,6 @@ import Footer from "@/components/layout/Footer";
 export default function Home() {
   const [isDark, setIsDark] = useState(true);
   const [mounted, setMounted] = useState(false);
-  const [blink, setBlink] = useState(true);
 
   useEffect(() => {
     setMounted(true);
@@ -18,8 +17,6 @@ export default function Home() {
       setIsDark(false);
       document.body.classList.add("light");
     }
-    const t = setInterval(() => setBlink((b) => !b), 530);
-    return () => clearInterval(t);
   }, []);
 
   const toggleTheme = () => {
@@ -35,9 +32,8 @@ export default function Home() {
 
   return (
     <div className="h-screen flex flex-col bg-bg-base overflow-hidden">
-      <Navbar />
-
-      {/* Main */}
+      <Navbar isDark={isDark} onToggleTheme={toggleTheme} />
+      
       <main className="relative z-10 flex-1 flex flex-col items-center px-3 sm:px-6 py-6 sm:py-10 md:py-16 overflow-y-auto scrollbar-hide">
         <motion.div
           initial={{ opacity: 0, y: 14 }}
@@ -53,6 +49,3 @@ export default function Home() {
     </div>
   );
 }
-
-
-
