@@ -180,10 +180,13 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
               {status === "idle" ? (
                 <span className="inline-flex items-center gap-1.5 animate-[pulse_1000ms_cubic-bezier(0.4,0,0.6,1)_infinite]">
                   <i className="hn hn-play-solid text-[9.5px]" />
-                  <span>START TYPING &nbsp;·&nbsp; TAB TO RESTART</span>
+                  <span>
+                    START TYPING
+                    <span className="hidden lg:inline">&nbsp;·&nbsp; TAB TO RESTART</span>
+                  </span>
                 </span>
               ) : (
-                "TAB TO RESTART"
+                <span className="hidden lg:inline">TAB TO RESTART</span>
               )}
             </div>
           </motion.div>
