@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import WpmChart from "@/components/sections/Results/WpmChart";
+import PixelIconBtn from "@/components/ui/PixelIconBtn";
 import ClearModal from "@/components/ui/modals/ClearModal";
 import type { ScoreEntry } from "@/hooks/useScoreHistory";
+import '@hackernoon/pixel-icon-library/fonts/iconfont.css';
 
 interface ScoreHistoryProps {
   history: ScoreEntry[];
@@ -43,26 +45,19 @@ export function ScoreHistory({ history, onClear }: ScoreHistoryProps) {
         {/* Section header */}
         <div className="flex items-center justify-between mb-3 sm:mb-4">
           <div className="flex items-center gap-2">
-            <svg width="14" height="14" viewBox="0 0 12 12" style={{ imageRendering: "pixelated" }}>
-              <rect x="3" y="0" width="6" height="1" fill="var(--amber)" />
-              <rect x="2" y="1" width="8" height="5" fill="var(--amber)" />
-              <rect x="1" y="2" width="2" height="3" fill="var(--amber)" />
-              <rect x="9" y="2" width="2" height="3" fill="var(--amber)" />
-              <rect x="4" y="6" width="4" height="1" fill="var(--amber)" />
-              <rect x="5" y="7" width="2" height="2" fill="var(--amber)" />
-              <rect x="3" y="9" width="6" height="2" fill="var(--amber)" />
-            </svg>
-            <span className="font-pixel text-[0.55rem] sm:text-[0.65rem] text-amber tracking-wider5">
+            <i className="hn hn-trophy-solid text-amber text-[12px] sm:text-[14px]" />
+            <span className="font-pixel text-[0.55rem] md:text-[0.65rem] text-amber tracking-wider5">
               SCORE HISTORY
             </span>
           </div>
 
-          <button
+          <PixelIconBtn
             onClick={() => setShowModal(true)}
-            className="font-pixel text-[0.45rem] sm:text-[0.5rem] text-text-muted border border-border-strong px-2 py-1 bg-bg-surface hover:text-danger hover:border-danger transition-colors duration-150 cursor-pointer"
+            title="CLEAR"
+            variant="danger"
           >
-            CLEAR
-          </button>
+            <i className="hn hn-trash-solid text-[10px] md:text-[11px]" />
+          </PixelIconBtn>
         </div>
 
         {/* Chart */}
@@ -95,32 +90,42 @@ export function ScoreHistory({ history, onClear }: ScoreHistoryProps) {
                   return (
                     <tr
                       key={entry.id}
-                      className="border-b border-border-subtle last:border-b-0"
-                      style={{ background: isBest ? "var(--default-glow)" : undefined }}
+                      className={`border-b border-border-subtle last:border-b-0 ${
+                        isBest ? "bg-[var(--default-glow)]" : ""
+                      }`}
                     >
                       {/* DATE */}
                       <td className="font-mono text-xs sm:text-sm text-text-dim px-3 py-2 whitespace-nowrap">
                         {formatTime(entry.timestamp)}
                       </td>
+                      
                       {/* WPM */}
                       <td
-                        className="font-mono text-sm sm:text-base font-bold px-3 py-2"
-                        style={{ color: isBest ? "var(--amber)" : "var(--default)" }}
+                        className={`font-mono text-sm sm:text-base font-bold px-3 py-2 ${
+                          isBest ? "text-amber" : "text-accent"
+                        }`}
                       >
-                        {entry.wpm}
-                        {isBest && <span className="font-pixel text-[0.4rem] text-amber ml-1">★</span>}
+                        <span className="inline-flex items-center gap-1">
+                          {entry.wpm}
+                          {isBest && <i className="hn hn-star-solid text-amber text-[4px] md:text-[5px]" />}
+                        </span>
                       </td>
+                      
                       {/* ACC */}
                       <td className="font-mono text-xs sm:text-sm text-text-sub px-3 py-2">{entry.accuracy}%</td>
+                      
                       {/* CORRECT */}
                       <td className="font-mono text-xs sm:text-sm text-accent px-3 py-2">{entry.correct}</td>
+                      
                       {/* ERRORS */}
                       <td
-                        className="font-mono text-xs sm:text-sm px-3 py-2"
-                        style={{ color: entry.incorrect > 0 ? "var(--red)" : "var(--text-muted)" }}
+                        className={`font-mono text-xs sm:text-sm px-3 py-2 ${
+                          entry.incorrect > 0 ? "text-danger" : "text-text-muted"
+                        }`}
                       >
                         {entry.incorrect}
                       </td>
+                      
                       {/* TIME */}
                       <td className="font-mono text-xs sm:text-sm text-text-muted px-3 py-2 whitespace-nowrap">
                         {entry.duration}s

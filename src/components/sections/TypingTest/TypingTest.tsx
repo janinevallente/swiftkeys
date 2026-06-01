@@ -10,6 +10,7 @@ import { StatsBar } from "./StatsBar";
 import { Results } from "../Results/Results";
 import { ControlBar } from "./ControlBar";
 import type { Difficulty } from "@/lib/texts";
+import '@hackernoon/pixel-icon-library/fonts/iconfont.css';
 
 interface TypingTestProps {
   isDark: boolean;
@@ -166,8 +167,9 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
                 spellCheck={false}
               />
               {!focused && (
-                <div className="absolute inset-0 flex items-center justify-center z-10 backdrop-blur-sm font-pixel text-[0.35rem] sm:text-7xs text-text-sub tracking-wider5">
-                  ▶ CLICK TO FOCUS
+                <div className="absolute inset-0 flex items-center justify-center gap-1.5 z-10 backdrop-blur-sm font-pixel text-[0.35rem] sm:text-7xs text-text-sub tracking-wider5">
+                  <i className="hn hn-play-solid text-[10px]" />
+                  <span>CLICK TO FOCUS</span>
                 </div>
               )}
               <TypingArea chars={chars} cursor={cursor} isDark={isDark} />
@@ -175,7 +177,14 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
 
             {/* Hint */}
             <div className="mt-4 sm:mt-6 text-center select-none font-pixel text-[0.3rem] sm:text-5xs text-text-muted tracking-wider4">
-              {status === "idle" ? "▶ START TYPING  ·  TAB TO RESTART" : "TAB TO RESTART"}
+              {status === "idle" ? (
+                <span className="inline-flex items-center gap-1.5 animate-[pulse_1000ms_cubic-bezier(0.4,0,0.6,1)_infinite]">
+                  <i className="hn hn-play-solid text-[9.5px]" />
+                  <span>START TYPING &nbsp;·&nbsp; TAB TO RESTART</span>
+                </span>
+              ) : (
+                "TAB TO RESTART"
+              )}
             </div>
           </motion.div>
         )}

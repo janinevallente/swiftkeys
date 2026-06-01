@@ -1,4 +1,5 @@
 "use client";
+import '@hackernoon/pixel-icon-library/fonts/iconfont.css';
 
 export default function PixelToggle({ isDark, onClick }: { isDark: boolean; onClick: () => void }) {
   const trackW    = 64;
@@ -17,21 +18,17 @@ export default function PixelToggle({ isDark, onClick }: { isDark: boolean; onCl
   const thumbHi    = isDark ? "#8fb86a" : "#ffffff";   // amber (lighter green) / white
   const thumbBord  = isDark ? "#2a4a18" : "#888888";   // darker green / border-strong
 
-  const moonColor  = "#f0f6fc";  // text-primary dark — icy near-white
-  const moonCutout = isDark ? "#5d8c3e" : "#ffffff";   // matches thumb fill
-
   return (
     <button
       onClick={onClick}
       title={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      className="cursor-pointer bg-transparent border-none p-0 select-none shrink-0"
-      style={{ imageRendering: "pixelated" }}
+      className="cursor-pointer bg-transparent border-none p-0 select-none shrink-0 [image-rendering:pixelated]"
     >
       <svg
         width={trackW}
         height={trackH}
         viewBox={`0 0 ${trackW} ${trackH}`}
-        style={{ imageRendering: "pixelated", display: "block" }}
+        className="[image-rendering:pixelated] block"
       >
         {/* Track fill */}
         <rect x="0" y="0" width={trackW} height={trackH} fill={track} />
@@ -44,10 +41,10 @@ export default function PixelToggle({ isDark, onClick }: { isDark: boolean; onCl
         {/* Track border */}
         <rect x="0" y="0" width={trackW} height={trackH} fill="none" stroke={trackBord} strokeWidth="1" />
 
-        {/* Stars (dark) or clouds (light) on the inactive side */}
+        {/* Stars/Clouds are now shifted dynamically to the open, inactive side */}
         {isDark ? (
           <>
-            {/* Pixel stars — using text-primary #f0f6fc */}
+            {/* Dark Mode: Thumb is on the LEFT (x=4), so show stars on the RIGHT side */}
             <rect x="42" y="6"  width="2" height="2" fill="#f0f6fc" opacity="0.6" />
             <rect x="50" y="11" width="2" height="2" fill="#f0f6fc" opacity="0.4" />
             <rect x="46" y="20" width="2" height="2" fill="#f0f6fc" opacity="0.5" />
@@ -56,13 +53,13 @@ export default function PixelToggle({ isDark, onClick }: { isDark: boolean; onCl
           </>
         ) : (
           <>
-            {/* Pixel clouds — using border-strong #888888 */}
-            <rect x="40" y="10" width="4" height="2" fill="#888888" opacity="0.4" />
-            <rect x="38" y="12" width="8" height="4" fill="#888888" opacity="0.4" />
-            <rect x="40" y="16" width="4" height="2" fill="#888888" opacity="0.4" />
-            <rect x="50" y="16" width="4" height="2" fill="#888888" opacity="0.3" />
-            <rect x="48" y="18" width="8" height="3" fill="#888888" opacity="0.3" />
-            <rect x="50" y="21" width="4" height="2" fill="#888888" opacity="0.3" />
+            {/* Light Mode: Thumb is on the RIGHT (x=38), so shift clouds to the LEFT side (x decreased by 32) */}
+            <rect x="8"  y="10" width="4" height="2" fill="#6d6c6c" opacity="0.4" />
+            <rect x="6"  y="12" width="8" height="4" fill="#6d6c6c" opacity="0.4" />
+            <rect x="8"  y="16" width="4" height="2" fill="#6d6c6c" opacity="0.4" />
+            <rect x="18" y="16" width="4" height="2" fill="#6d6c6c" opacity="0.3" />
+            <rect x="16" y="18" width="8" height="3" fill="#6d6c6c" opacity="0.3" />
+            <rect x="18" y="21" width="4" height="2" fill="#6d6c6c" opacity="0.3" />
           </>
         )}
 
@@ -79,37 +76,16 @@ export default function PixelToggle({ isDark, onClick }: { isDark: boolean; onCl
           {/* Thumb border */}
           <rect x="0" y="0" width={thumbSize} height={thumbSize} fill="none" stroke={thumbBord} strokeWidth="1" />
 
-          {/* Icon */}
-          {isDark ? (
-            // Moon — pixel crescent in text-primary color
-            <>
-              <rect x="7"  y="4"  width="8" height="2" fill={moonColor} />
-              <rect x="5"  y="6"  width="4" height="2" fill={moonColor} />
-              <rect x="13" y="6"  width="4" height="2" fill={moonColor} />
-              <rect x="5"  y="8"  width="3" height="6" fill={moonColor} />
-              <rect x="15" y="8"  width="3" height="6" fill={moonColor} />
-              <rect x="5"  y="14" width="4" height="2" fill={moonColor} />
-              <rect x="13" y="14" width="4" height="2" fill={moonColor} />
-              <rect x="7"  y="16" width="8" height="2" fill={moonColor} />
-              {/* Crescent cutout */}
-              <rect x="9"  y="6"  width="6" height="2" fill={moonCutout} />
-              <rect x="8"  y="8"  width="7" height="6" fill={moonCutout} />
-              <rect x="9"  y="14" width="6" height="2" fill={moonCutout} />
-            </>
-          ) : (
-            // Sun — accent (#222222) center, accent-dim (#444444) rays
-            <>
-              <rect x="8"  y="8"  width="6" height="6" fill="#222222" />
-              <rect x="10" y="4"  width="2" height="3" fill="#444444" />
-              <rect x="10" y="15" width="2" height="3" fill="#444444" />
-              <rect x="4"  y="10" width="3" height="2" fill="#444444" />
-              <rect x="15" y="10" width="3" height="2" fill="#444444" />
-              <rect x="5"  y="5"  width="2" height="2" fill="#444444" />
-              <rect x="15" y="5"  width="2" height="2" fill="#444444" />
-              <rect x="5"  y="15" width="2" height="2" fill="#444444" />
-              <rect x="15" y="15" width="2" height="2" fill="#444444" />
-            </>
-          )}
+          {/* HackerNoon Font Icons */}
+          <foreignObject x="0" y="0" width={thumbSize} height={thumbSize}>
+            <div className="w-full h-full flex items-center justify-center pointer-events-none select-none">
+              {isDark ? (
+                <i className="hn hn-moon-solid text-[12px] leading-none" />
+              ) : (
+                <i className="hn hn-sun-solid text-[12px] leading-none"/>
+              )}
+            </div>
+          </foreignObject>
         </g>
       </svg>
     </button>

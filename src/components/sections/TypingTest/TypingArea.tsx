@@ -59,14 +59,8 @@ export function TypingArea({ chars, cursor, isDark }: TypingAreaProps) {
       <div ref={containerRef} className="relative w-full overflow-hidden max-h-typing">
         <div className="absolute bottom-0 left-0 right-0 h-10 pointer-events-none z-10 bg-fade-surface" />
 
-        {/* Responsive font size: smaller on mobile, larger on desktop */}
-        <div
-          className="font-mono select-none pb-5 tracking-pixel"
-          style={{
-            fontSize: "clamp(1rem, 4vw, 1.6rem)",
-            lineHeight: "clamp(2rem, 6vw, 3rem)",
-          }}
-        >
+        {/* Replaced clamp font sizing styles with responsive arbitrary Tailwind hooks */}
+        <div className="font-mono select-none pb-5 tracking-pixel text-[clamp(1rem,4vw,1.6rem)] leading-[clamp(2rem,6vw,3rem)]">
           {words.map((word, wi) => (
             <span key={wi} className="inline-block">
               {word.chars.map((c, ci) => {
@@ -77,24 +71,21 @@ export function TypingArea({ chars, cursor, isDark }: TypingAreaProps) {
                     {isActive && (
                       <motion.span
                         ref={cursorRef}
-                        className="absolute left-0 top-1 bottom-1 w-[2px] sm:w-[3px] bg-amber"
-                        style={{ boxShadow: "0 0 8px var(--amber), 0 0 16px rgba(143,184,106,0.4)" }}
+                        /* Replaced inline style drop-shadow map with a unified Tailwind arbitrary shadow class */
+                        className="absolute left-0 top-1 bottom-1 w-[2px] sm:w-[3px] bg-amber shadow-[0_0_8px_var(--amber),0_0_16px_rgba(143,184,106,0.4)]"
                         animate={{ opacity: [1, 1, 0, 0] }}
                         transition={{ duration: 0.9, repeat: Infinity, ease: "linear", times: [0, 0.45, 0.45, 1] }}
                       />
                     )}
                     <span
-                      style={{
-                        color:
-                          c.state === "correct"    ? "var(--default)"
-                          : c.state === "incorrect" ? "var(--red)"
-                          : "var(--text-dim)",
-                        textShadow:
-                          c.state === "correct"    ? "0 0 8px var(--default-glow-strong)"
-                          : c.state === "incorrect" ? "0 0 8px rgba(255,60,60,0.5)"
-                          : "none",
-                        textDecoration: c.state === "incorrect" ? "underline var(--red)" : "none",
-                      }}
+                      /* Replaced the complex multi-ternary style assignment with template literal mapping utilities */
+                      className={`${
+                        c.state === "correct"
+                          ? "text-accent [text-shadow:0_0_8px_var(--default-glow-strong)]"
+                          : c.state === "incorrect"
+                          ? "text-danger [text-shadow:0_0_8px_rgba(255,60,60,0.5)] underline decoration-danger"
+                          : "text-text-dim [text-shadow:none]"
+                      }`}
                     >
                       {c.char === " " ? "\u00a0" : c.char}
                     </span>

@@ -1,11 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import PixelLogo from "@/components/ui/PixelLogo";
 import PixelToggle from "@/components/ui/PixelToggle";
-import PixelInfoBtn from "@/components/ui/PixelInfoBtn";
+import PixelIconBtn from "@/components/ui/PixelIconBtn";
 import AboutModal from "@/components/ui/modals/AboutModal";
-import { useState } from "react";
+import '@hackernoon/pixel-icon-library/fonts/iconfont.css';
 
 interface NavbarProps {
   isDark: boolean;
@@ -36,7 +37,9 @@ export default function Navbar({ isDark, onToggleTheme }: NavbarProps) {
         {/* Right side: info button + theme toggle */}
         <div className="flex items-center gap-2 sm:gap-3">
           <PixelToggle isDark={isDark} onClick={onToggleTheme} />
-          <PixelInfoBtn onClick={() => setAboutOpen(true)} />
+          <PixelIconBtn onClick={() => setAboutOpen(true)} title="About SwiftKeys" showTitle={false}>
+            <i className="hn hn-info-circle text-[18px]" />
+          </PixelIconBtn>
         </div>  
       </motion.nav>
 

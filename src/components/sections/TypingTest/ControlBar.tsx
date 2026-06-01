@@ -1,9 +1,9 @@
 "use client";
 
-import { Volume2, VolumeX, RotateCcw } from "lucide-react";
 import type { Difficulty } from "@/lib/texts";
 import PixelBtn from "@/components/ui/PixelBtn";
 import PixelIconBtn from "@/components/ui/PixelIconBtn";
+import '@hackernoon/pixel-icon-library/fonts/iconfont.css';
 
 interface ControlBarProps {
   duration: number;
@@ -37,7 +37,7 @@ export function ControlBar({
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-3">
 
       <div className="flex flex-col xs:flex-row items-start xs:items-center gap-2 xs:gap-3 flex-wrap">
-        {/* Duration */}
+        {/* Duration Selection */}
         <div className="flex items-center gap-1">
           <span className="font-pixel text-4xs text-text-muted tracking-wider2 mr-1">TIME</span>
           {durations.map((d) => (
@@ -53,10 +53,10 @@ export function ControlBar({
           ))}
         </div>
 
-        {/* Divider — hidden on mobile */}
+        {/* Divider */}
         <div className="hidden xs:block w-px h-5 bg-border-strong" />
 
-        {/* Difficulty */}
+        {/* Difficulty Selection */}
         <div className="flex items-center gap-1">
           <span className="font-pixel text-4xs text-text-muted tracking-wider2 mr-1">LVL</span>
           {difficulties.map((d) => (
@@ -67,7 +67,6 @@ export function ControlBar({
               onClick={() => { if (!disabled) onDifficulty(d); }}
               amber={true}
             >
-              {/* Shorten labels on mobile */}
               <span className="xs:hidden">{d === "easy" ? "E" : d === "medium" ? "M" : "H"}</span>
               <span className="hidden xs:inline">{d.toUpperCase()}</span>
             </PixelBtn>
@@ -75,13 +74,17 @@ export function ControlBar({
         </div>
       </div>
 
-      {/* Icon buttons */}
+      {/* Control Buttons using HackerNoon Icon Classes */}
       <div className="flex items-center gap-2 self-end sm:self-auto">
-        <PixelIconBtn onClick={onToggleSound} title={soundEnabled ? "Mute" : "Unmute"}>
-          {soundEnabled ? <Volume2 size={13} strokeWidth={2} /> : <VolumeX size={13} strokeWidth={2} />}
+        <PixelIconBtn onClick={onToggleSound} title={soundEnabled ? "VOLUME ON" : "VOLUME OFF"}>
+          {soundEnabled ? (
+            <i className="hn hn-sound-on-solid text-[14px]" />
+          ) : (
+            <i className="hn hn-sound-mute-solid text-[14px]" />
+          )}
         </PixelIconBtn>
-        <PixelIconBtn onClick={onRestart} title="Restart (Tab)">
-          <RotateCcw size={13} strokeWidth={2} />
+        <PixelIconBtn onClick={onRestart} title="Restart">
+          <i className="hn hn-refresh-solid text-[14px]" />
         </PixelIconBtn>
       </div>
     </div>

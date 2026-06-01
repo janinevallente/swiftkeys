@@ -12,8 +12,7 @@ export default function ClearModal({ onConfirm, onCancel }: { onConfirm: () => v
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.15 }}
-        className="fixed inset-0 z-50 flex items-center justify-center px-4"
-        style={{ background: "rgba(0,0,0,0.75)" }}
+        className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/75"
         onClick={onCancel}
       >
         {/* Modal panel — stopPropagation so clicking inside doesn't close */}
@@ -24,11 +23,7 @@ export default function ClearModal({ onConfirm, onCancel }: { onConfirm: () => v
           exit={{ scale: 0.88, opacity: 0, y: 12 }}
           transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
           onClick={(e) => e.stopPropagation()}
-          className="relative w-full max-w-xs sm:max-w-sm bg-bg-base border-2 border-accent p-5 sm:p-7"
-          style={{
-            boxShadow: "6px 6px 0px var(--default-dim), 0 0 24px rgba(93,140,62,0.2)",
-            imageRendering: "pixelated",
-          }}
+          className="relative w-full max-w-xs sm:max-w-sm bg-bg-base border-2 border-accent p-5 sm:p-7 shadow-pixel-hero shadow-[0_0_24px_rgba(93,140,62,0.2)] [image-rendering:pixelated]"
         >
           {/* Pixel corner decorations */}
           <CornerDeco pos="top-left" />
@@ -38,7 +33,7 @@ export default function ClearModal({ onConfirm, onCancel }: { onConfirm: () => v
 
           {/* Warning icon */}
           <div className="flex justify-center mb-4">
-            <svg width="28" height="28" viewBox="0 0 16 16" style={{ imageRendering: "pixelated" }}>
+            <svg width="28" height="28" viewBox="0 0 16 16" className="[image-rendering:pixelated]">
               <rect x="7"  y="1"  width="2" height="2" fill="var(--amber)" />
               <rect x="6"  y="3"  width="4" height="2" fill="var(--amber)" />
               <rect x="5"  y="5"  width="6" height="2" fill="var(--amber)" />
@@ -54,7 +49,7 @@ export default function ClearModal({ onConfirm, onCancel }: { onConfirm: () => v
 
           {/* Title */}
           <div className="text-center mb-2">
-            <p className="font-pixel text-[0.55rem] sm:text-[0.65rem] text-accent tracking-wider5 leading-relaxed">
+            <p className="font-pixel text-[0.55rem] sm:text-[0.65rem] text-accent tracking-wider5 line-height-relaxed">
               CLEAR SCORE HISTORY?
             </p>
           </div>
@@ -70,15 +65,13 @@ export default function ClearModal({ onConfirm, onCancel }: { onConfirm: () => v
           <div className="flex items-center justify-center gap-3">
             <button
               onClick={onCancel}
-              className="font-pixel text-[0.45rem] sm:text-[0.5rem] tracking-wider3 px-4 sm:px-5 py-2 bg-bg-surface text-text-sub border-2 border-border-strong cursor-pointer hover:border-text-sub hover:text-text-base transition-colors duration-150"
-              style={{ boxShadow: "3px 3px 0px var(--border-strong)" }}
+              className="font-pixel text-[0.45rem] sm:text-[0.5rem] tracking-wider3 px-4 sm:px-5 py-2 bg-bg-surface text-text-sub border-2 border-border-strong cursor-pointer hover:border-text-sub hover:text-text-base transition-colors duration-150 shadow-pixel-border"
             >
               CANCEL
             </button>
             <button
               onClick={onConfirm}
-              className="font-pixel text-[0.45rem] sm:text-[0.5rem] tracking-wider3 px-4 sm:px-5 py-2 bg-accent text-bg-base border-2 border-accent cursor-pointer hover:opacity-85 transition-opacity"
-              style={{ boxShadow: "3px 3px 0px rgba(63,97,40,0.5)" }}
+              className="font-pixel text-[0.45rem] sm:text-[0.5rem] tracking-wider3 px-4 sm:px-5 py-2 bg-accent text-bg-base border-2 border-accent cursor-pointer hover:opacity-85 transition-opacity shadow-[3px_3px_0px_rgba(63,97,40,0.5)]"
             >
               YES
             </button>
