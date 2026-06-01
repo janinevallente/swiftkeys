@@ -68,7 +68,7 @@ export function ScoreHistory({ history, onClear }: ScoreHistoryProps) {
         {/* Chart */}
         <div className="mb-3 sm:mb-4">
           <div className="font-pixel text-[0.45rem] sm:text-[0.5rem] text-text-muted tracking-wider5 mb-1 text-center">
-            WPM — LAST {Math.min(history.length, 10)} RUNS
+            WPM — LAST {Math.min(history.length, 10)} SPEED TESTS
           </div>
           <WpmChart history={history} />
         </div>
