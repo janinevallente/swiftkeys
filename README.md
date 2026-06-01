@@ -12,7 +12,8 @@ A retro arcade-themed typing speed test built with **Next.js** and **Framer Moti
 - **Live stats** — real-time WPM and accuracy displayed as the test runs, with a prominent countdown timer that turns red when time is low
 - **Score history** — results are saved locally (up to 50 entries); view a bar chart of your last 10 runs and a full scrollable log table with date, WPM, accuracy, correct/incorrect keystrokes, and duration
 - **Clear history modal** — pixel-art confirmation modal with a danger theme before wiping saved scores
-- **Minecraft-style pixel toggle** — custom SVG dark/light mode switch with a moon icon (dark) and sun icon (light), stars and clouds in the track background
+- **About modal** — pixel info button in the navbar opens a modal covering what SwiftKeys is, the developer's background, and why it was built
+- **Pixel toggle** — custom SVG dark/light mode switch with a moon icon (dark) and sun icon (light), stars and clouds in the track background
 - **Sound effects** — Web Audio API 8-bit click sounds on keystrokes (correct = crisp blip, incorrect = low buzz) and a C major arpeggio fanfare on test completion, with a shared dynamics compressor for consistent volume
 - **Word-safe text wrapping** — typing text never breaks mid-word at the right edge
 - **Mobile-friendly** — fully responsive across all screen sizes with an `xs: 380px` custom breakpoint; difficulty labels shorten to single letters on small screens
@@ -42,39 +43,44 @@ A retro arcade-themed typing speed test built with **Next.js** and **Framer Moti
 ```
 src/
 ├── app/
-│   ├── globals.css                         # CSS custom properties (dark/light tokens), CRT effects
-│   ├── layout.tsx                          # Root layout with metadata
-│   └── page.tsx                            # Home page — theme state and layout shell
+│   ├── globals.css                             # CSS custom properties (dark/light tokens), CRT effects
+│   ├── layout.tsx                              # Root layout with metadata
+│   └── page.tsx                                # Home page — theme state and layout shell
 ├── components/
 │   ├── layout/
-│   │   ├── Navbar.tsx                      # Fixed top bar with logo and pixel theme toggle
-│   │   └── Footer.tsx                      # Minimal copyright footer
+│   │   ├── Navbar.tsx                          # Top bar with logo, pixel info button, and theme toggle
+│   │   └── Footer.tsx                          # Minimal copyright footer
 │   ├── sections/
 │   │   ├── Results/
-│   │   │   ├── Results.tsx                 # Stage clear screen with WPM hero and stat grid
-│   │   │   └── ScoreHistory.tsx            # Bar chart + full log table + clear modal
+│   │   │   ├── Results.tsx                     # Stage clear screen with WPM hero and stat grid
+│   │   │   ├── ScoreHistory.tsx                # Full log table + clear modal trigger
+│   │   │   └── WpmChart.tsx                    # Recharts bar chart for last 10 runs
 │   │   └── TypingTest/
-│   │       ├── TypingArea.tsx              # Character-by-character text renderer with cursor
-│   │       └── TypingTest.tsx              # Main test orchestrator — state, keyboard, mobile input
+│   │       ├── TypingTest.tsx                  # Main test orchestrator — state, keyboard, mobile input
+│   │       ├── TypingArea.tsx                  # Character-by-character text renderer with cursor
+│   │       ├── ControlBar.tsx                  # Duration + difficulty selectors and icon buttons
+│   │       └── StatsBar.tsx                    # Live timer + WPM + accuracy bar during test
 │   ├── styling/
-│   │   └── CornerDeco.tsx                  # Reusable pixel corner bracket decoration
+│   │   ├── CornerDeco.tsx                      # Reusable pixel corner bracket decoration
+│   │   └── SectionLabel.tsx                    # Pixel-font section heading label
 │   └── ui/
-│       ├── ClearModal.tsx                  # Confirmation modal for clearing score history
-│       ├── ControlBar.tsx                  # Duration + difficulty selectors and icon buttons
-│       ├── PixelBtn.tsx                    # Reusable pixel-style button
-│       ├── PixelIconBtn.tsx                # Reusable pixel-style icon button
-│       ├── PixelLogo.tsx                   # SVG pixel keyboard logo
-│       ├── PixelStat.tsx                   # Stat display panel (WPM / ACC readouts)
-│       ├── PixelToggle.tsx                 # Minecraft-style dark/light mode SVG toggle
-│       ├── StatsBar.tsx                    # Live timer + WPM + accuracy bar during test
-│       └── WpmChart.tsx                    # Recharts bar chart for score history
+│       ├── modals/
+│       │   ├── AboutModal.tsx                  # About the app, developer, and motivation modal
+│       │   └── ClearModal.tsx                  # Confirmation modal for clearing score history
+│       ├── PixelBtn.tsx                        # Reusable pixel-style toggle button
+│       ├── PixelDivider.tsx                    # Decorative pixel horizontal rule
+│       ├── PixelIconBtn.tsx                    # Reusable pixel-style icon button
+│       ├── PixelInfoBtn.tsx                    # Pixel "i" button that opens the About modal
+│       ├── PixelLogo.tsx                       # SVG pixel keyboard logo mark
+│       ├── PixelStat.tsx                       # Stat display panel (WPM / ACC readouts)
+│       └── PixelToggle.tsx                     # Minecraft-style dark/light mode SVG toggle
 ├── hooks/
-│   ├── useScoreHistory.ts                  # localStorage read/write for score entries (max 50)
-│   ├── useSoundEffects.ts                  # Web Audio API tick and finish sounds
-│   └── useTypingTest.ts                    # Core typing test logic — chars, cursor, timer, results
+│   ├── useScoreHistory.ts                      # localStorage read/write for score entries (max 50)
+│   ├── useSoundEffects.ts                      # Web Audio API tick and finish sounds
+│   └── useTypingTest.ts                        # Core typing test logic — chars, cursor, timer, results
 └── lib/
-    ├── data.ts                             # Site metadata (name, URL, tagline)
-    └── texts.ts                            # Text pools for easy / medium / hard difficulty
+    ├── data.ts                                 # Site metadata and developer info
+    └── texts.ts                                # Text pools for easy / medium / hard difficulty
 ```
 
 ---
