@@ -6,9 +6,9 @@ import { useTypingTest } from "@/hooks/useTypingTest";
 import { useSoundEffects } from "@/hooks/useSoundEffects";
 import { useScoreHistory } from "@/hooks/useScoreHistory";
 import { TypingArea } from "./TypingArea";
-import { StatsBar } from "../../ui/StatsBar";
+import { StatsBar } from "./StatsBar";
 import { Results } from "../Results/Results";
-import { ControlBar } from "../../ui/ControlBar";
+import { ControlBar } from "./ControlBar";
 import type { Difficulty } from "@/lib/texts";
 
 interface TypingTestProps {

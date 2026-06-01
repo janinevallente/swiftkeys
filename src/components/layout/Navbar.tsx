@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import PixelLogo from "@/components/ui/PixelLogo";
 import PixelToggle from "@/components/ui/PixelToggle";
 import PixelInfoBtn from "@/components/ui/PixelInfoBtn";
-import AboutModal from "@/components/ui/AboutModal";
+import AboutModal from "@/components/ui/modals/AboutModal";
 
 export default function Navbar() {
     const [isDark, setIsDark] = useState(true);

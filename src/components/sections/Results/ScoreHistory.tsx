@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import WpmChart from "@/components/ui/WpmChart";
-import ClearModal from "@/components/ui/ClearModal";
+import WpmChart from "@/components/sections/Results/WpmChart";
+import ClearModal from "@/components/ui/modals/ClearModal";
 import type { ScoreEntry } from "@/hooks/useScoreHistory";
 
 interface ScoreHistoryProps {
