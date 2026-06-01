@@ -1,146 +1,190 @@
-# Next.js Boilerplate
+# SwiftKeys — Retro Typing Speed Test
 
-A personal Next.js starter that works for both **marketing/portfolio sites** and **full web apps** — with auth scaffolding, API routes, middleware, global state, and reusable animation primitives baked in.
-
-## Tech stack
-
-| Layer | Library |
-|---|---|
-| Framework | Next.js 15 (App Router) |
-| Language | TypeScript |
-| Styling | Tailwind CSS 3 |
-| Animations | Framer Motion 12 |
-| Icons | Lucide React |
-| State | Context + useReducer (swap for Zustand/Jotai) |
+A retro arcade-themed typing speed test built with **Next.js** and **Framer Motion**. Test your typing speed across three difficulty levels, track your WPM and accuracy, and review your score history — all wrapped in a pixel-art aesthetic inspired by classic arcade games.
 
 ---
 
-## Getting started
+## Features
 
-```bash
-cp .env.example .env.local   # fill in your values
-npm install
-npm run dev
-```
+- **Retro arcade theme** — pixel-art UI with Press Start 2P and VT323 fonts, chunky pixel borders, CRT-style flicker animation, and a forest-green dark mode palette
+- **Three difficulty levels** — Easy (simple sentences), Medium (thoughtful paragraphs), and Hard (complex technical vocabulary)
+- **Configurable test duration** — choose between 15s, 30s, or 60s timed tests
+- **Live stats** — real-time WPM and accuracy displayed as the test runs, with a prominent countdown timer that turns red when time is low
+- **Score history** — results are saved locally (up to 50 entries); view a bar chart of your last 10 runs and a full scrollable log table with date, WPM, accuracy, correct/incorrect keystrokes, and duration
+- **Clear history modal** — pixel-art confirmation modal with a danger theme before wiping saved scores
+- **Minecraft-style pixel toggle** — custom SVG dark/light mode switch with a moon icon (dark) and sun icon (light), stars and clouds in the track background
+- **Sound effects** — Web Audio API 8-bit click sounds on keystrokes (correct = crisp blip, incorrect = low buzz) and a C major arpeggio fanfare on test completion, with a shared dynamics compressor for consistent volume
+- **Word-safe text wrapping** — typing text never breaks mid-word at the right edge
+- **Mobile-friendly** — fully responsive across all screen sizes with an `xs: 380px` custom breakpoint; difficulty labels shorten to single letters on small screens
+- **Keyboard shortcut** — press `Tab` at any time to instantly restart the test
 
 ---
 
-## Project structure
+## Tech Stack
+
+| Layer      | Technology                                                        |
+| ---------- | ----------------------------------------------------------------- |
+| Framework  | [Next.js 16](https://nextjs.org) (App Router)                     |
+| UI Library | [React 19](https://react.dev)                                     |
+| Language   | TypeScript                                                        |
+| Styling    | [Tailwind CSS v3](https://tailwindcss.com) (custom design tokens) |
+| Animation  | [Framer Motion](https://www.framer-motion.com)                    |
+| Charts     | [Recharts](https://recharts.org)                                  |
+| Icons      | [Lucide React](https://lucide.dev)                                |
+| Fonts      | Press Start 2P + VT323 via Google Fonts                           |
+| Audio      | Web Audio API (no dependencies)                                   |
+| Deployment | [Vercel](https://vercel.com)                                      |
+
+---
+
+## Project Structure
 
 ```
 src/
 ├── app/
-│   ├── (auth)/               # Unauthenticated pages
-│   │   ├── login/page.tsx
-│   │   └── register/page.tsx
-│   ├── (app)/                # Authenticated app shell
-│   │   ├── layout.tsx        # Sidebar / top nav wrapper
-│   │   └── dashboard/page.tsx
-│   ├── (marketing)/          # Public site pages (optional group)
-│   │   └── layout.tsx
-│   ├── api/
-│   │   └── auth/             # Auth API routes
-│   │       ├── route.ts      # POST /api/auth  (login)
-│   │       ├── me/           # GET  /api/auth/me
-│   │       ├── logout/       # POST /api/auth/logout
-│   │       └── register/     # POST /api/auth/register
-│   ├── globals.css
-│   ├── layout.tsx            # Root layout + AppProvider
-│   └── page.tsx              # Landing / home page
+│   ├── globals.css                         # CSS custom properties (dark/light tokens), CRT effects
+│   ├── layout.tsx                          # Root layout with metadata
+│   └── page.tsx                            # Home page — theme state and layout shell
 ├── components/
-│   ├── animations/           # Framer Motion wrappers
-│   ├── layout/               # Navbar, Footer
-│   └── ui/                   # Preloader, shared UI primitives
+│   ├── layout/
+│   │   ├── Navbar.tsx                      # Fixed top bar with logo and pixel theme toggle
+│   │   └── Footer.tsx                      # Minimal copyright footer
+│   ├── sections/
+│   │   ├── Results/
+│   │   │   ├── Results.tsx                 # Stage clear screen with WPM hero and stat grid
+│   │   │   └── ScoreHistory.tsx            # Bar chart + full log table + clear modal
+│   │   └── TypingTest/
+│   │       ├── TypingArea.tsx              # Character-by-character text renderer with cursor
+│   │       └── TypingTest.tsx              # Main test orchestrator — state, keyboard, mobile input
+│   ├── styling/
+│   │   └── CornerDeco.tsx                  # Reusable pixel corner bracket decoration
+│   └── ui/
+│       ├── ClearModal.tsx                  # Confirmation modal for clearing score history
+│       ├── ControlBar.tsx                  # Duration + difficulty selectors and icon buttons
+│       ├── PixelBtn.tsx                    # Reusable pixel-style button
+│       ├── PixelIconBtn.tsx                # Reusable pixel-style icon button
+│       ├── PixelLogo.tsx                   # SVG pixel keyboard logo
+│       ├── PixelStat.tsx                   # Stat display panel (WPM / ACC readouts)
+│       ├── PixelToggle.tsx                 # Minecraft-style dark/light mode SVG toggle
+│       ├── StatsBar.tsx                    # Live timer + WPM + accuracy bar during test
+│       └── WpmChart.tsx                    # Recharts bar chart for score history
 ├── hooks/
-│   ├── useAuth.ts            # Client-side auth state
-│   ├── useFetch.ts           # Generic data-fetching hook
-│   └── useLocalStorage.ts    # SSR-safe localStorage hook
-├── lib/
-│   ├── api.ts                # Typed fetch wrapper (apiFetch)
-│   ├── auth.ts               # Server-side session helper
-│   ├── constants.ts          # Routes, cookie names, page sizes
-│   ├── data.ts               # Site config (name, nav, footer)
-│   ├── db.ts                 # DB client singleton (swap as needed)
-│   ├── utils.ts              # cn(), formatDate(), truncate(), etc.
-│   └── validations.ts        # Form validation helpers
-├── middleware.ts             # Auth guard + security headers
-├── services/
-│   └── userService.ts        # Server-side DB access layer
-├── store/
-│   ├── index.ts
-│   └── AppProvider.tsx       # Global state (Context + useReducer)
-└── types/
-    └── index.ts              # Shared TypeScript types
+│   ├── useScoreHistory.ts                  # localStorage read/write for score entries (max 50)
+│   ├── useSoundEffects.ts                  # Web Audio API tick and finish sounds
+│   └── useTypingTest.ts                    # Core typing test logic — chars, cursor, timer, results
+└── lib/
+    ├── data.ts                             # Site metadata (name, URL, tagline)
+    └── texts.ts                            # Text pools for easy / medium / hard difficulty
 ```
 
 ---
 
-## Customise for a new project
+## Getting Started
 
-### 1. Site config — `src/lib/data.ts`
-Update `site`, `meta`, `footer`, and `navLinks`.
+### Prerequisites
 
-### 2. Environment — `.env.local`
-Copy `.env.example` → `.env.local` and fill in your DB URL, JWT secret, and any third-party keys.
+- Node.js **18+**
+- npm
 
-### 3. Database — `src/lib/db.ts`
-Uncomment and configure your preferred ORM: **Prisma**, **Drizzle**, **Supabase**, or **Mongoose**.
+### Installation
 
-### 4. Auth — `src/lib/auth.ts`
-Replace the `getSession()` stub with your auth provider's session helper (NextAuth `auth()`, Clerk `currentUser()`, or custom JWT validation).
+```bash
+# Clone the repository
+git clone https://github.com/janinevallente/swiftkeys.git
+cd swiftkeys
 
-### 5. Sections / pages
-- **Landing site**: edit `src/app/page.tsx` and add sections there.
-- **Web app**: add routes under `src/app/(app)/` — they automatically use the app-shell layout and are protected by middleware.
-
-### 6. Global state — `src/store/AppProvider.tsx`
-Extend the `AppState` interface and `Action` union for new slices. Or swap the whole store for **Zustand** / **Jotai** if the app grows.
-
----
-
-## Auth flow
-
-```
-Request → middleware.ts
-  ├─ Public route?  → pass through
-  ├─ No token?      → redirect /login?callbackUrl=...
-  └─ Has token?     → pass through to route handler
-                       └─ server components call getSession()
+# Install dependencies
+npm install
 ```
 
-Middleware protects every route not listed in `PUBLIC_ROUTES` (see `src/lib/constants.ts`).
+### Development
+
+```bash
+npm run dev
+```
+
+The app will be available at `http://localhost:3000`.
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+### Preview Production Build
+
+```bash
+npm start
+```
 
 ---
 
-## Animation primitives (`src/components/animations/`)
+## Content Management
 
-| Component | Use |
-|---|---|
-| `FadeUp` | Scroll-triggered fade + slide-up |
-| `SectionReveal` | Clip-path reveal (`up` / `left` / `fade` / `scale`) |
-| `WordReveal` | Word-by-word stagger |
-| `PageTransition` | Full-screen curtain wipe between routes |
-| `ScrollToSection` | Reads `?scrollTo=id` and smooth-scrolls after navigation |
+All text prompts used in the typing test live in a single file:
 
----
+```
+src/lib/texts.ts
+```
 
-## Toggle the preloader
+Each difficulty level has its own pool of 15–20 passages. To add, remove, or edit prompts, update the corresponding array in `textPools`.
 
-In `src/app/page.tsx`:
+### Adding a Text Prompt
 
 ```ts
-const ENABLE_PRELOADER = false; // disable entirely
+// src/lib/texts.ts
+easy: [
+  // ... existing entries
+  "Your new easy passage goes here, written in plain everyday language.",
+],
+
+medium: [
+  // ... existing entries
+  "Your new medium passage, with moderately complex vocabulary and sentence structure.",
+],
+
+hard: [
+  // ... existing entries
+  "Your new hard passage featuring advanced vocabulary, technical terminology, or complex syntax.",
+],
 ```
 
 ---
 
-## Recommended additions (not included)
+## Color Themes
 
-These are intentionally left out to keep the template lean. Add what you need:
+Themes are defined entirely through CSS custom properties in `globals.css` and toggled via a `body.light` class.
 
-- **`npm i zod`** — schema validation
-- **`npm i @prisma/client prisma`** — database ORM
-- **`npm i next-auth`** or **`npm i @clerk/nextjs`** — managed auth
-- **`npm i zustand`** — simpler global state
-- **`npm i react-query`** or **`npm i swr`** — server-state / caching
-- **`npm i stripe`** — payments
+| Token                | Dark Mode | Light Mode |
+| -------------------- | --------- | ---------- |
+| `--bg-base`          | `#0d1117` | `#ffffff`  |
+| `--bg-surface`       | `#161b22` | `#f0f0f0`  |
+| `--default` (accent) | `#5d8c3e` | `#222222`  |
+| `--amber`            | `#8fb86a` | `#555555`  |
+| `--text-primary`     | `#f0f6fc` | `#111111`  |
+| `--text-secondary`   | `#8fb86a` | `#444444`  |
+| `--red`              | `#f85149` | `#cc2222`  |
+
+---
+
+## Deployment
+
+This project is deployed on [Vercel](https://vercel.com). To deploy your own fork:
+
+1. Push the repository to GitHub
+2. Import the project on [vercel.com](https://vercel.com/new)
+3. Vercel auto-detects Next.js — no configuration needed
+4. Every push to `main` triggers a new deployment automatically
+
+---
+
+## Acknowledgements
+
+- Animations powered by [Framer Motion](https://www.framer-motion.com)
+- Charts powered by [Recharts](https://recharts.org)
+- Pixel fonts from [Google Fonts](https://fonts.google.com) — Press Start 2P & VT323
+- Deployed and hosted on [Vercel](https://vercel.com)
+
+---
+
+_Built by Janine Vallente._
