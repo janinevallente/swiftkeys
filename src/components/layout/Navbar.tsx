@@ -4,11 +4,14 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import PixelLogo from "@/components/ui/PixelLogo";
 import PixelToggle from "@/components/ui/PixelToggle";
+import PixelInfoBtn from "@/components/ui/PixelInfoBtn";
+import AboutModal from "@/components/ui/AboutModal";
 
 export default function Navbar() {
     const [isDark, setIsDark] = useState(true);
     const [mounted, setMounted] = useState(false);
     const [blink, setBlink] = useState(true);
+    const [aboutOpen, setAboutOpen] = useState(false);
 
     useEffect(() => {
     setMounted(true);
@@ -50,9 +53,14 @@ export default function Navbar() {
             </div>
         </div>
 
-        {/* Pixel toggle */}
-        <PixelToggle isDark={isDark} onClick={toggleTheme} />
+        {/* Right side: info button + theme toggle */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          <PixelToggle isDark={isDark} onClick={toggleTheme} />
+          <PixelInfoBtn onClick={() => setAboutOpen(true)} />
+        </div>  
         </motion.nav>
+
+        <AboutModal open={aboutOpen} onClose={() => setAboutOpen(false)} />
       </div>
     );
 }
