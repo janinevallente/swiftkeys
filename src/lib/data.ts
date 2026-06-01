@@ -1,6 +1,6 @@
 export const site = {
   name: "SwiftKeys",
-  tagline: "A retro game themed typing speed test.",
+  tagline: "A retro arcade-themed typing speed test.",
   url: "https://swiftkeys-wpm.vercel.app",
   locale: "en",
 };
