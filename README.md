@@ -23,18 +23,18 @@ A retro arcade-themed typing speed test built with **Next.js** and **Framer Moti
 
 ## Tech Stack
 
-| Layer      | Technology                                                        |
-| ---------- | ----------------------------------------------------------------- |
-| Framework  | [Next.js 16](https://nextjs.org) (App Router)                     |
-| UI Library | [React 19](https://react.dev)                                     |
-| Language   | TypeScript                                                        |
-| Styling    | [Tailwind CSS v3](https://tailwindcss.com) (custom design tokens) |
-| Animation  | [Framer Motion](https://www.framer-motion.com)                    |
-| Charts     | [Recharts](https://recharts.org)                                  |
-| Icons      | [Lucide React](https://lucide.dev)                                |
-| Fonts      | Press Start 2P + VT323 via Google Fonts                           |
-| Audio      | Web Audio API (no dependencies)                                   |
-| Deployment | [Vercel](https://vercel.com)                                      |
+| Layer      | Technology                                                                  |
+| ---------- | --------------------------------------------------------------------------- |
+| Framework  | [Next.js 16](https://nextjs.org) (App Router)                               |
+| UI Library | [React 19](https://react.dev)                                               |
+| Language   | TypeScript                                                                  |
+| Styling    | [Tailwind CSS v3](https://tailwindcss.com) (custom design tokens)           |
+| Animation  | [Framer Motion](https://www.framer-motion.com)                              |
+| Charts     | [Recharts](https://recharts.org)                                            |
+| Icons      | [HackerNoon Pixel Icon Library](https://github.com/m6io/pixel-icon-library) |
+| Fonts      | Press Start 2P + VT323 via Google Fonts                                     |
+| Audio      | Web Audio API (no dependencies)                                             |
+| Deployment | [Vercel](https://vercel.com)                                                |
 
 ---
 
@@ -70,7 +70,6 @@ src/
 │       ├── PixelBtn.tsx                        # Reusable pixel-style toggle button
 │       ├── PixelDivider.tsx                    # Decorative pixel horizontal rule
 │       ├── PixelIconBtn.tsx                    # Reusable pixel-style icon button
-│       ├── PixelInfoBtn.tsx                    # Pixel "i" button that opens the About modal
 │       ├── PixelLogo.tsx                       # SVG pixel keyboard logo mark
 │       ├── PixelStat.tsx                       # Stat display panel (WPM / ACC readouts)
 │       └── PixelToggle.tsx                     # Minecraft-style dark/light mode SVG toggle
@@ -188,6 +187,7 @@ This project is deployed on [Vercel](https://vercel.com). To deploy your own for
 
 - Animations powered by [Framer Motion](https://www.framer-motion.com)
 - Charts powered by [Recharts](https://recharts.org)
+- Pixel icons provided by [HackerNoon Pixel Icon Library](https://github.com/m6io/pixel-icon-library)
 - Pixel fonts from [Google Fonts](https://fonts.google.com) — Press Start 2P & VT323
 - Deployed and hosted on [Vercel](https://vercel.com)
 
