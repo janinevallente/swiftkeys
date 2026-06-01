@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
 import WpmChart from "@/components/sections/Results/WpmChart";
 import PixelIconBtn from "@/components/ui/PixelIconBtn";
@@ -21,6 +22,12 @@ function formatTime(ts: number): string {
 
 export function ScoreHistory({ history, onClear }: ScoreHistoryProps) {
   const [showModal, setShowModal] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
 
   if (history.length === 0) return null;
 
@@ -28,14 +35,6 @@ export function ScoreHistory({ history, onClear }: ScoreHistoryProps) {
 
   return (
     <>
-      {/* Clear confirm modal — rendered in a portal-like position via fixed */}
-      {showModal && (
-        <ClearModal
-          onConfirm={() => { onClear(); setShowModal(false); }}
-          onCancel={() => setShowModal(false)}
-        />
-      )}
-
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -138,6 +137,19 @@ export function ScoreHistory({ history, onClear }: ScoreHistoryProps) {
           </div>
         </div>
       </motion.div>
+
+      {/* PORTAL: This breaks the modal out of the layout component tree and renders it at the document body root */}
+      {mounted && createPortal(
+        <ClearModal
+          open={showModal}
+          onConfirm={() => {
+            onClear();
+            setShowModal(false);
+          }}
+          onClose={() => setShowModal(false)}
+        />,
+        document.body
+      )}
     </>
   );
 }
