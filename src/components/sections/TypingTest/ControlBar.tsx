@@ -67,25 +67,28 @@ export function ControlBar({
               onClick={() => { if (!disabled) onDifficulty(d); }}
               amber={true}
             >
-              <span className="xs:hidden">{d === "easy" ? "E" : d === "medium" ? "M" : "H"}</span>
-              <span className="hidden xs:inline">{d.toUpperCase()}</span>
+              <span>{d.toUpperCase()}</span>
             </PixelBtn>
           ))}
         </div>
       </div>
 
       {/* Control Buttons using HackerNoon Icon Classes */}
-      <div className="flex items-center gap-2 self-end sm:self-auto">
-        <PixelIconBtn onClick={onToggleSound} title={soundEnabled ? "VOLUME ON" : "VOLUME OFF"}>
-          {soundEnabled ? (
-            <i className="hn hn-sound-on-solid text-[14px]" />
-          ) : (
-            <i className="hn hn-sound-mute-solid text-[14px]" />
-          )}
-        </PixelIconBtn>
-        <PixelIconBtn onClick={onRestart} title="Restart">
-          <i className="hn hn-refresh-solid text-[14px]" />
-        </PixelIconBtn>
+      <div className="flex items-center gap-2 self-start md:self-auto ">
+        <div className="mt-3 mb-1 md:mt-0 md:mb-0">
+          <PixelIconBtn onClick={onToggleSound} title={soundEnabled ? "VOLUME ON" : "VOLUME OFF"}>
+            {soundEnabled ? (
+              <i className="hn hn-sound-on-solid text-[14px]" />
+            ) : (
+              <i className="hn hn-sound-mute-solid text-[14px]" />
+            )}
+          </PixelIconBtn>
+        </div>
+        <div className="mt-3 mb-1 md:mt-0 md:mb-0">
+          <PixelIconBtn onClick={onRestart} title="Restart">
+            <i className="hn hn-refresh-solid text-[14px]" />
+          </PixelIconBtn>
+        </div>
       </div>
     </div>
   );

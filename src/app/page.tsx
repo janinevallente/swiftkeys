@@ -34,7 +34,7 @@ export default function Home() {
     <div className="h-screen flex flex-col bg-bg-base overflow-hidden">
       <Navbar isDark={isDark} onToggleTheme={toggleTheme} />
       
-      <main className="relative z-10 flex-1 flex flex-col items-center px-3 sm:px-6 py-6 sm:py-10 md:py-16 overflow-y-auto scrollbar-hide">
+      <main className="relative z-10 flex-1 flex flex-col items-center px-4 md:px-6 py-6 md:py-10 overflow-y-auto scrollbar-hide">
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}

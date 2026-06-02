@@ -22,10 +22,11 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
   const [difficulty,   setDifficulty]   = useState<Difficulty>("medium");
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [focused,      setFocused]      = useState(true);
+  const [isCapsLock,   setIsCapsLock]   = useState(false); // Track CapsLock state
 
   const inputRef           = useRef<HTMLInputElement>(null);
   const isPhysicalKeyboard = useRef(false);
-  const savedRef           = useRef(false); // prevent double-save
+  const savedRef           = useRef(false);
 
   const { playTick, playFinish } = useSoundEffects(soundEnabled);
   const { history, addEntry, clearHistory } = useScoreHistory();
@@ -40,7 +41,7 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
   useEffect(() => {
     if (prevStatus.current !== "finished" && status === "finished") {
       playFinish();
-      savedRef.current = false; // reset flag on new finish
+      savedRef.current = false;
     }
     prevStatus.current = status;
   }, [status, playFinish]);
@@ -62,6 +63,10 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (typeof e.getModifierState === "function") {
+        setIsCapsLock(e.getModifierState("CapsLock"));
+      }
+
       if (e.key === "Tab")    { e.preventDefault(); restart(); return; }
       if (e.key === "Escape") return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
@@ -71,9 +76,19 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
         handleKeyPressRef.current(e.key);
       }
     };
+
+    const onKeyUp = (e: KeyboardEvent) => {
+      if (typeof e.getModifierState === "function") {
+        setIsCapsLock(e.getModifierState("CapsLock"));
+      }
+    };
+
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    window.addEventListener("keyup", onKeyUp);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("keyup", onKeyUp);
+    };
   }, [restart]);
 
   const focusInput = () => { inputRef.current?.focus(); setFocused(true); };
@@ -89,21 +104,48 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
       handleKeyPressRef.current("Backspace");
     } else {
       const last = val[val.length - 1];
-      playTickRef.current(last === getExpectedCharRef.current());
+      const expected = getExpectedCharRef.current();
+
+      // MOBILE CAPSLOCK ENGINE:
+      // Check if typed character is an absolute alphabetic character
+      if (last && /[a-zA-Z]/.test(last)) {
+        const isUpper = last === last.toUpperCase() && last !== last.toLowerCase();
+        const isLower = last === last.toLowerCase() && last !== last.toUpperCase();
+        
+        if (expected && /[a-zA-Z]/.test(expected)) {
+          const expectedUpper = expected === expected.toUpperCase();
+          const expectedLower = expected === expected.toLowerCase();
+
+          // Case mismatch indicators:
+          if (isUpper && expectedLower) {
+            setIsCapsLock(true);
+          } else if (isLower && expectedUpper) {
+            // If they type lowercase where an uppercase was needed, Caps Lock is off
+            setIsCapsLock(false);
+          }
+        } else {
+          // If expecting an arbitrary symbol/number/space but they entered an uppercase letter:
+          if (isUpper) {
+            setIsCapsLock(true);
+          }
+        }
+      }
+
+      playTickRef.current(last === expected);
       handleKeyPressRef.current(last);
     }
     e.target.value = "a";
   };
 
-  const handleRestart    = useCallback(() => { restart(); inputRef.current?.focus(); }, [restart]);
-  const handleDuration   = (d: number)     => { setDuration(d);   restart(); };
-  const handleDifficulty = (d: Difficulty) => { setDifficulty(d); restart(); };
+  const handleRestart    = useCallback(() => { restart(); setIsCapsLock(false); inputRef.current?.focus(); }, [restart]);
+  const handleDuration   = (d: number)     => { setDuration(d);   restart(); setIsCapsLock(false); };
+  const handleDifficulty = (d: Difficulty) => { setDifficulty(d); restart(); setIsCapsLock(false); };
 
   return (
     <div className="w-full flex flex-col">
 
       {/* Control bar */}
-      <div className="mb-4 sm:mb-6">
+      <div className="mb-4 md:mb-6">
         <ControlBar
           duration={duration}
           difficulty={difficulty}
@@ -144,7 +186,7 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
             className="flex flex-col"
           >
             {/* Stats */}
-            <div className="mb-2">
+            <div>
               <StatsBar
                 wpm={liveWpm}
                 accuracy={accuracy}
@@ -152,6 +194,26 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
                 isDark={isDark}
                 status={status}
               />
+            </div>
+
+            {/* Caps Lock On Alert */}
+            <div className="h-3 md:h-10 overflow-hidden flex items-end justify-center">
+              <AnimatePresence>
+                {isCapsLock && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 8 }}
+                    transition={{ duration: 0.15 }}
+                    className="mb-3 flex items-center gap-2 bg-bg-surface border border-danger px-2.5 py-1.5 rounded"
+                  >
+                    <i className="hn hn-exclaimation-solid text-danger text-[10px] md:text-[9.8px]" />
+                    <span className="font-pixel text-[0.4rem] md:text-[0.45rem] font-bold text-danger tracking-wider4">
+                      CAPS LOCK ON
+                    </span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Typing area */}
