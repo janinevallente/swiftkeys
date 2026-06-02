@@ -16,7 +16,7 @@ export function StatsBar({ wpm, accuracy, timeLeft, isDark, status }: StatsBarPr
   const isIdle = status === "idle";
 
   return (
-    <div className="flex items-center justify-between gap-2 sm:gap-6 mb-4 sm:mb-6 select-none">
+    <div className="flex items-center justify-between gap-2 md:gap-6 mb-4 md:mb-3 select-none">
 
       {/* Timer panel */}
       <div
