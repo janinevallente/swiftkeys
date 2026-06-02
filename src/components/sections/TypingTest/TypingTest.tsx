@@ -197,7 +197,7 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
             </div>
 
             {/* Caps Lock On Alert */}
-            <div className="h-3 md:h-10 overflow-hidden flex items-end justify-center">
+            <div className="h-10 overflow-hidden flex items-end justify-center">
               <AnimatePresence>
                 {isCapsLock && (
                   <motion.div
