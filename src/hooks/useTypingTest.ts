@@ -16,6 +16,7 @@ export interface TestResult {
   correct: number;
   incorrect: number;
   duration: number;
+  completed: boolean; // true = typed to the end; false = ran out of time
 }
 
 export type TestStatus = "idle" | "running" | "finished";
@@ -38,7 +39,6 @@ export function useTypingTest(duration: number, difficulty: Difficulty) {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const startTimeRef = useRef<number>(0);
 
-  // Initialize or reset the test with current text
   const initializeTest = useCallback((newText: string) => {
     const initial: CharData[] = newText.split("").map((char, index) => ({
       char,
@@ -63,7 +63,6 @@ export function useTypingTest(duration: number, difficulty: Difficulty) {
     }
   }, []);
 
-  // Generate new text when difficulty changes
   useEffect(() => {
     const newText = getRandomText(difficulty);
     setText(newText);
@@ -71,15 +70,20 @@ export function useTypingTest(duration: number, difficulty: Difficulty) {
     setTimeLeft(duration);
   }, [difficulty, duration, initializeTest]);
 
-  // Also handle duration changes without changing text
   useEffect(() => {
     if (statusRef.current === "idle") {
       setTimeLeft(duration);
     }
   }, [duration]);
 
+  // completed = true means the player finished the text; false = time ran out
   const finishTest = useCallback(
-    (elapsed: number, correct: number, incorrect: number) => {
+    (
+      elapsed: number,
+      correct: number,
+      incorrect: number,
+      completed: boolean,
+    ) => {
       if (timerRef.current) {
         clearInterval(timerRef.current);
         timerRef.current = null;
@@ -88,7 +92,14 @@ export function useTypingTest(duration: number, difficulty: Difficulty) {
       const wpm = minutes > 0 ? Math.round(correct / 5 / minutes) : 0;
       const total = correct + incorrect;
       const accuracy = total > 0 ? Math.round((correct / total) * 100) : 100;
-      setResult({ wpm, accuracy, correct, incorrect, duration: elapsed });
+      setResult({
+        wpm,
+        accuracy,
+        correct,
+        incorrect,
+        duration: elapsed,
+        completed,
+      });
       statusRef.current = "finished";
       setStatus("finished");
     },
@@ -107,7 +118,13 @@ export function useTypingTest(duration: number, difficulty: Difficulty) {
           setTimeLeft((prev) => {
             if (prev <= 1) {
               const elapsed = (Date.now() - startTimeRef.current) / 1000;
-              finishTest(elapsed, correctRef.current, incorrectRef.current);
+              // Time ran out — completed = false
+              finishTest(
+                elapsed,
+                correctRef.current,
+                incorrectRef.current,
+                false,
+              );
               return 0;
             }
             return prev - 1;
@@ -130,7 +147,6 @@ export function useTypingTest(duration: number, difficulty: Difficulty) {
           next[pos] = { ...next[pos], state: "idle" };
         }
 
-        // Update counts
         if (prevCharState === "correct") {
           correctRef.current = Math.max(0, correctRef.current - 1);
           setCorrectCount(correctRef.current);
@@ -153,7 +169,6 @@ export function useTypingTest(duration: number, difficulty: Difficulty) {
 
       const next = [...current];
       next[pos] = { ...next[pos], state: isCorrect ? "correct" : "incorrect" };
-
       const nextPos = pos + 1;
       if (nextPos < next.length) {
         next[nextPos] = { ...next[nextPos], state: "active" };
@@ -170,7 +185,8 @@ export function useTypingTest(duration: number, difficulty: Difficulty) {
 
         if (nextPos >= next.length) {
           const elapsed = (Date.now() - startTimeRef.current) / 1000;
-          finishTest(elapsed, correctRef.current, incorrectRef.current);
+          // Typed to the end — completed = true
+          finishTest(elapsed, correctRef.current, incorrectRef.current, true);
         }
       } else {
         incorrectRef.current += 1;
