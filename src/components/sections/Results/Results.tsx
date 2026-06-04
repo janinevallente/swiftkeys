@@ -15,32 +15,48 @@ interface ResultsProps {
   onClearHistory: () => void;
 }
 
+// Wording sets depending on how the test ended
+const completedCopy = {
+  headline:  "STAGE CLEAR",
+  sub:       "PLAYER 1 RESULTS",
+  heroLabel: "FINAL SCORE",
+} as const;
+
+const timeUpCopy = {
+  headline:  "TIME'S UP",
+  sub:       "BETTER LUCK NEXT TIME",
+  heroLabel: "YOUR SCORE",
+} as const;
+
 export function Results({ result, isDark, onRestart, history, onClearHistory }: ResultsProps) {
-  // Map Tailwind custom properties and corresponding text shadow colors dynamically
+  const copy = result.completed ? completedCopy : timeUpCopy;
+
   const secondaryStats = [
-    { 
-      label: "ACC",     
-      value: `${result.accuracy}%`,        
-      textColor: "text-[var(--amber)]", 
-      textShadow: "shadow-[0_0_10px_rgba(235,163,55,0.33)]" // Amber glow hue
+    {
+      label:      "ACC",
+      value:      `${result.accuracy}%`,
+      textColor:  "text-[var(--amber)]",
+      textShadow: "shadow-[0_0_10px_rgba(235,163,55,0.33)]",
     },
-    { 
-      label: "CORRECT", 
-      value: String(result.correct),           
-      textColor: "text-accent", 
-      textShadow: "shadow-[0_0_10px_rgba(93,140,62,0.33)]" // Accent glow hue
+    {
+      label:      "CORRECT",
+      value:      String(result.correct),
+      textColor:  "text-accent",
+      textShadow: "shadow-[0_0_10px_rgba(93,140,62,0.33)]",
     },
-    { 
-      label: "ERRORS",  
-      value: String(result.incorrect),          
-      textColor: result.incorrect > 0 ? "text-danger" : "text-accent", 
-      textShadow: result.incorrect > 0 ? "shadow-[0_0_10px_rgba(255,60,60,0.33)]" : "shadow-[0_0_10px_rgba(93,140,62,0.33)]" 
+    {
+      label:      "ERRORS",
+      value:      String(result.incorrect),
+      textColor:  result.incorrect > 0 ? "text-danger" : "text-accent",
+      textShadow: result.incorrect > 0
+        ? "shadow-[0_0_10px_rgba(255,60,60,0.33)]"
+        : "shadow-[0_0_10px_rgba(93,140,62,0.33)]",
     },
-    { 
-      label: "TIME",    
-      value: `${Math.round(result.duration)}s`, 
-      textColor: "text-text-sub", 
-      textShadow: "shadow-none" 
+    {
+      label:      "TIME",
+      value:      `${Math.round(result.duration)}s`,
+      textColor:  "text-text-sub",
+      textShadow: "shadow-none",
     },
   ];
 
@@ -57,14 +73,50 @@ export function Results({ result, isDark, onRestart, history, onClearHistory }: 
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.05, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="inline-flex items-center gap-2 font-pixel text-[0.5rem] sm:text-[0.7rem] text-amber tracking-wider8 mb-1.5"
+          className="inline-flex items-center gap-2 font-pixel text-[0.5rem] sm:text-[0.7rem] tracking-wider8 mb-1.5 text-amber"
         >
-          <i className="hn hn-star-solid text-[6px] md:text-[8px] mb-1" />
-          <span>STAGE CLEAR</span>
-          <i className="hn hn-star-solid text-[6px] md:text-[8px] mb-1" />
+          {result.completed ? (
+            <>
+              <i className="hn hn-star-solid text-[6px] md:text-[8px] mb-1" />
+              <span>{copy.headline}</span>
+              <i className="hn hn-star-solid text-[6px] md:text-[8px] mb-1" />
+            </>
+          ) : (
+            <>
+              {/* Pixel hourglass icon for time-up */}
+              <div className="mb-1">
+                <svg width="10" height="10" viewBox="0 0 10 12" style={{ imageRendering: "pixelated" }}>
+                  <rect x="0" y="0"  width="10" height="1" fill="var(--amber)" />
+                  <rect x="1" y="1"  width="8"  height="1" fill="var(--amber)" />
+                  <rect x="2" y="2"  width="6"  height="1" fill="var(--amber)" />
+                  <rect x="3" y="3"  width="4"  height="2" fill="var(--amber)" />
+                  <rect x="4" y="5"  width="2"  height="2" fill="var(--amber)" />
+                  <rect x="3" y="7"  width="4"  height="2" fill="var(--amber)" />
+                  <rect x="2" y="9"  width="6"  height="1" fill="var(--amber)" />
+                  <rect x="1" y="10" width="8"  height="1" fill="var(--amber)" />
+                  <rect x="0" y="11" width="10" height="1" fill="var(--amber)" />
+                </svg>
+              </div>
+              <span>{copy.headline}</span>
+              <div className="mb-1">
+                <svg width="10" height="10" viewBox="0 0 10 12" style={{ imageRendering: "pixelated" }}>
+                  <rect x="0" y="0"  width="10" height="1" fill="var(--amber)" />
+                  <rect x="1" y="1"  width="8"  height="1" fill="var(--amber)" />
+                  <rect x="2" y="2"  width="6"  height="1" fill="var(--amber)" />
+                  <rect x="3" y="3"  width="4"  height="2" fill="var(--amber)" />
+                  <rect x="4" y="5"  width="2"  height="2" fill="var(--amber)" />
+                  <rect x="3" y="7"  width="4"  height="2" fill="var(--amber)" />
+                  <rect x="2" y="9"  width="6"  height="1" fill="var(--amber)" />
+                  <rect x="1" y="10" width="8"  height="1" fill="var(--amber)" />
+                  <rect x="0" y="11" width="10" height="1" fill="var(--amber)" />
+                </svg>
+              </div>
+            </>
+          )}
         </motion.div>
+
         <div className="font-pixel text-[0.3rem] sm:text-4xs text-text-muted tracking-wider5">
-          PLAYER 1 RESULTS
+          {copy.sub}
         </div>
       </div>
 
@@ -74,7 +126,7 @@ export function Results({ result, isDark, onRestart, history, onClearHistory }: 
           initial={{ scale: 0.85, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.1, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-          className="relative bg-bg-surface border-2 border-accent shadow-hero-box text-center px-6 sm:px-9 py-3 sm:py-4"
+          className="relative bg-bg-surface border-2 text-center px-6 sm:px-9 py-3 sm:py-4 border-accent shadow-hero-box"
         >
           <CornerDeco pos="top-left" />
           <CornerDeco pos="top-right" />
@@ -82,13 +134,13 @@ export function Results({ result, isDark, onRestart, history, onClearHistory }: 
           <CornerDeco pos="bottom-right" />
 
           <div className="font-pixel text-[0.3rem] sm:text-4xs text-text-muted tracking-wider8 mb-2">
-            FINAL SCORE
+            {copy.heroLabel}
           </div>
-          
-          <div className="font-mono font-bold leading-none tracking-pixel text-accent text-[clamp(3rem,18vw,6.5rem)]">
+
+          <div className="font-mono font-bold leading-none tracking-pixel text-[clamp(3rem,18vw,6.5rem)] text-accent">
             {result.wpm}
           </div>
-          
+
           <div className="font-pixel text-[0.35rem] sm:text-7xs text-text-sub tracking-wider5 mt-2">
             WPM
           </div>
@@ -113,8 +165,7 @@ export function Results({ result, isDark, onRestart, history, onClearHistory }: 
             <div className="font-pixel text-[0.28rem] sm:text-2xs text-text-muted tracking-wider4 mb-1.5 sm:mb-2">
               {s.label}
             </div>
-            
-            <div className={`font-mono text-[1.3rem] sm:text-[1.8rem] font-bold leading-none tracking-pixel drop-shadow-md [text-shadow:0_0_10px_rgba(0,0,0,0.15)] ${s.textColor}`}>
+            <div className={`font-mono text-[1.3rem] sm:text-[1.8rem] font-bold leading-none tracking-pixel drop-shadow-md ${s.textColor}`}>
               {s.value}
             </div>
           </motion.div>
