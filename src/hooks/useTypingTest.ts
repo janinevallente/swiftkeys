@@ -200,7 +200,18 @@ export function useTypingTest(duration: number, difficulty: Difficulty) {
     return charsRef.current[cursorRef.current]?.char ?? "";
   }, []);
 
+  // this resets the test with the SAME text (Tab or restart button)
   const restart = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    initializeTest(text);
+    setTimeLeft(duration);
+  }, [text, duration, initializeTest]);
+
+  // this picks a NEW random text (Play Again button after results)
+  const newGame = useCallback(() => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
@@ -237,5 +248,6 @@ export function useTypingTest(duration: number, difficulty: Difficulty) {
     handleKeyPress,
     getExpectedChar,
     restart,
+    newGame,
   };
 }
