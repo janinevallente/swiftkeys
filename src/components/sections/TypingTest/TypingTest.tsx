@@ -34,7 +34,7 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
   const {
     chars, cursor, status, timeLeft,
     result, liveWpm, accuracy,
-    handleKeyPress, getExpectedChar, restart,
+    handleKeyPress, getExpectedChar, restart, newGame,
   } = useTypingTest(duration, difficulty);
 
   const prevStatus = useRef(status);
@@ -137,7 +137,8 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
     e.target.value = "a";
   };
 
-  const handleRestart    = useCallback(() => { restart(); setIsCapsLock(false); inputRef.current?.focus(); }, [restart]);
+  const handleRestart = useCallback(() => { restart(); setIsCapsLock(false); inputRef.current?.focus(); }, [restart]);
+  const handleNewGame = useCallback(() => { newGame(); setIsCapsLock(false); inputRef.current?.focus(); }, [newGame]);
   const handleDuration   = (d: number)     => { setDuration(d);   restart(); setIsCapsLock(false); };
   const handleDifficulty = (d: Difficulty) => { setDifficulty(d); restart(); setIsCapsLock(false); };
 
@@ -171,7 +172,7 @@ export function TypingTest({ isDark, onToggleTheme }: TypingTestProps) {
             <Results
               result={result}
               isDark={isDark}
-              onRestart={handleRestart}
+              onRestart={handleNewGame}
               history={history}
               onClearHistory={clearHistory}
             />
